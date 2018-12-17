@@ -1,0 +1,37 @@
+<resources>
+    <string name="app_name">RavelUp</string>
+    <string name="login_loginPage">Login</string>
+    <string name="mot_de_passe_loginPage">Mot de passe</string>
+    <string name="connexionBouton_LoginPage">Connexion</string>
+    <string name="login_activity_title_text">Inscription</string>
+    <string name="mot_de_passe_inscriptionPage">Mot de passe</string>
+    <string name="email_inscriptionPage">Email</string>
+    <string name="inscriptionBouton_InscriptionPage">Inscription</string>
+    <string name="datePicker_InscriptionPage">Date de naissance</string>
+    <string name="carteBouton_MenuPage">Carte</string>
+    <string name="ravelBouton_MenuPage">Ravel</string>
+    <string name="titre_MenuCartePage">Choisis la/les categorie(s)</string>
+    <string name="categorie1_mapMenuPage">Catégorie1</string>
+    <string name="categorie2_mapMenuPage">Catégorie2</string>
+    <string name="rayon_mapMenuPage">Rayon :</string>
+    <string name="aller_la_carte_mapMenuPage">Aller à la carte</string>
+    <string name="ravel_MainMenuPage">Ravel</string>
+    <string name="carte_MainMenuPage">Carte</string>
+    <string name="login_LoginPage">Login</string>
+    <string name="mot_de_passe_LoginPage">Mot de passe</string>
+    <string name="sign_up_activity_login_text">Login</string>
+    <string name="connexion_RedirectPage">Connexion</string>
+    <string name="inscription_RedirectPage">Inscription</string>
+    <string name="main_redirect_ravel_text">Ravel</string>
+    <string name="main_redirect_maps_text">Cartes</string>
+    <string name="title_activity_map">Map</string>
+    <string name="titre_QrCodePage">Scanner votre QR Code :</string>
+    <string name="QR_code_reader_QRCodePage">Scannez le QR Code</string>
+    <string name="description_title_descrptionPage">Description de :</string>
+    <string name="ride_title_descriptionPage">Nos Balades Conseillées</string>
+    <string name="login_signUpPage">Login</string>
+    <string name="mot_de_passe_signUpPage">Mot de passe</string>
+    <string name="email_signUpPage">Email</string>
+    <string name="confirmer_votre_mot_de_passe_signUpPage">Confirmer votre mot de passe</string>
+    <string name="confirmez_votre_mot_de_passe_signUpPage">Confirmez votre mot de passe</string>
+</resources>
