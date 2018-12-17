@@ -35,7 +35,7 @@
         app:layout_constraintTop_toBottomOf="@id/guideline_login" />
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/login"
+        android:id="@+id/login_signUpActivity"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -55,7 +55,7 @@
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/motDePasse"
+        android:id="@+id/motDePasse_signUpActivity"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -65,7 +65,7 @@
         android:layout_marginRight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login">
+        app:layout_constraintTop_toBottomOf="@+id/login_signUpActivity">
 
         <android.support.design.widget.TextInputEditText
             android:layout_width="match_parent"
@@ -75,7 +75,7 @@
     </android.support.design.widget.TextInputLayout>
 
     <TextView
-        android:id="@+id/datePicker"
+        android:id="@+id/datePicker_signUpActivity"
         android:layout_width="0dp"
         android:layout_height="30dp"
         android:layout_marginStart="8dp"
@@ -87,10 +87,10 @@
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/confirmeMotDePasse" />
+        app:layout_constraintTop_toBottomOf="@+id/confirmeMotDePasse_signUpActivity" />
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/email"
+        android:id="@+id/email_signUpActivity"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -100,7 +100,7 @@
         android:layout_marginRight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/datePicker">
+        app:layout_constraintTop_toBottomOf="@+id/datePicker_signUpActivity">
 
         <android.support.design.widget.TextInputEditText
             android:layout_width="match_parent"
@@ -110,7 +110,7 @@
     </android.support.design.widget.TextInputLayout>
 
     <Button
-        android:id="@+id/boutonInscription"
+        android:id="@+id/boutonInscription_signUpActivity"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -132,7 +132,7 @@
         app:layout_constraintGuide_percent="0.5060827" />
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/confirmeMotDePasse"
+        android:id="@+id/confirmeMotDePasse_signUpActivity"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -142,7 +142,7 @@
         android:layout_marginRight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/motDePasse">
+        app:layout_constraintTop_toBottomOf="@+id/motDePasse_signUpActivity">
 
         <android.support.design.widget.TextInputEditText
             android:layout_width="match_parent"

@@ -26,7 +26,10 @@ public class UserModel {
     }
 
     public void setLogin(String login) {
-        this.login = login;
+        if(login == null){
+            this.login="";
+        }else
+            this.login = login;
     }
 
     public String getMotDePasse() {
@@ -34,19 +37,30 @@ public class UserModel {
     }
 
     public void setMotDePasse(String motDePasse) {
-        this.motDePasse = motDePasse;
+        if(motDePasse == null){
+            this.motDePasse="";
+        }else
+            this.motDePasse = motDePasse;
     }
 
     public String getConfirmeMotDePasse() { return confirmeMotDePasse; }
 
-    public void setConfirmeMotDePasse(String confirmeMotDePasse) { this.confirmeMotDePasse = confirmeMotDePasse; }
+    public void setConfirmeMotDePasse(String confirmeMotDePasse) {
+        if(confirmeMotDePasse == null){
+            this.confirmeMotDePasse="";
+        }else
+            this.confirmeMotDePasse = confirmeMotDePasse;
+    }
 
     public String geteMail() {
         return eMail;
     }
 
     public void seteMail(String eMail) {
-        this.eMail = eMail;
+        if(eMail == null){
+            this.eMail="";
+        }else
+            this.eMail = eMail;
     }
 
     public Date getDateNaissance() {
@@ -54,6 +68,8 @@ public class UserModel {
     }
 
     public void setDateNaissance(Date dateNaissance) {
-        this.dateNaissance = dateNaissance;
+        Date minAge= new Date(2006,01,01);
+        if(dateNaissance.compareTo(minAge)>0)
+            this.dateNaissance = dateNaissance;
     }
 }

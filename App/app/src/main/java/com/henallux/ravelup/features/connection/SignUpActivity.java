@@ -1,8 +1,10 @@
 package com.henallux.ravelup.features.connection;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -11,6 +13,8 @@ import android.widget.DatePicker;
 import android.widget.TextView;
 
 import com.henallux.ravelup.R;
+import com.henallux.ravelup.features.menus.MainRedirectActivity;
+import com.henallux.ravelup.model.UserModel;
 
 import java.util.Calendar;
 
@@ -22,7 +26,7 @@ public class SignUpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_inscription);
 
         //region DatePicker
-        final TextView datePicker= findViewById(R.id.datePicker);
+        final TextView datePicker= findViewById(R.id.datePicker_signUpActivity);
         final DatePickerDialog.OnDateSetListener mDateSetListener= new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
@@ -62,20 +66,29 @@ public class SignUpActivity extends AppCompatActivity {
         //endregion
 
         //region inscription
-        Button inscription = findViewById(R.id.boutonInscription);
-        /*inscription.setOnClickListener(new View.OnClickListener() {
+        Button inscription = findViewById(R.id.boutonInscription_signUpActivity);
+        inscription.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 //add in db
                 UserModel user= new UserModel();
-                String login =
-                String
+                TextInputLayout login = findViewById(R.id.login_signUpActivity);
+                TextInputLayout motDePasse = findViewById(R.id.motDePasse_signUpActivity);
+                TextInputLayout confirmeMotDePasse = findViewById(R.id.confirmeMotDePasse_signUpActivity);
+                TextInputLayout email = findViewById(R.id.email_signUpActivity);
+                //TextInputLayout dateNaissance = findViewById(R.id.datePicker_signUpActivity);
 
-                //TODO check if age > 13
-                startActivity(new Intent(SignUpActivity.this, MapActivity.class));
+                user.setLogin(login.getEditText().getText().toString());
+                user.setMotDePasse(motDePasse.getEditText().getText().toString());
+                user.setConfirmeMotDePasse(confirmeMotDePasse.getEditText().getText().toString());
+                user.seteMail(email.getEditText().getText().toString());
+
+
+                //TODO changer les setters des classes userModel et loginModel
+                startActivity(new Intent(SignUpActivity.this, MainRedirectActivity.class));
             }
-        });*/
+        });
         //endregion
     }
 }
