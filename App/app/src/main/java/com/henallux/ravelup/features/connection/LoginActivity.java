@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -47,20 +48,42 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //TODO verify with api
                 //TokenReceived tokenReceived;
-                TextInputLayout login = findViewById(R.id.login_LoginActivity);
-                TextInputLayout motDePasse = findViewById(R.id.motDePasse_LoginActivity);
+
+
                 LoginModel loginModel = new LoginModel();
-                loginModel.setUserName("test");
-                loginModel.setPassword("Test_2018");
-                //loginModel.setUserName(login.getEditText().getText().toString());
-                //loginModel.setPassword(motDePasse.getEditText().getText().toString());
+                Boolean hasError = false;
+                //loginModel.setUserName("test");
+                //loginModel.setPassword("Test_2018");
 
-                try {
-                    new CheckLogin().execute(loginModel);
-
+                TextInputLayout login = findViewById(R.id.login_LoginActivity);
+                String loginValue = login.getEditText().getText().toString();
+                login.setError(null);
+                if(!loginValue.equals("")){
+                    loginModel.setUserName(loginValue);
+                } else {
+                    login.setError("Ce champs ne peut être vide");
+                    hasError=true;
                 }
-                catch(Exception e){
-                        Toast.makeText(LoginActivity.this, "Indentifiants incorrects", Toast.LENGTH_SHORT).show();
+                TextInputLayout password = findViewById(R.id.motDePasse_LoginActivity);
+                String passwordValue = password.getEditText().getText().toString();
+                password.setError(null);
+                if(!passwordValue.equals("")){
+                    loginModel.setPassword(passwordValue);
+                } else {
+                    password.setError("Ce champs ne peut être vide");
+                    hasError=true;
+                }
+
+
+                if(!hasError) {
+                    try {
+                        new CheckLogin().execute(loginModel);
+
+                    } catch (Exception e) {
+                        Toast.makeText(LoginActivity.this, "Identifiants incorrects", Toast.LENGTH_SHORT).show();
+                    }
+                }else{
+                    hasError = false;
                 }
 
 
@@ -83,8 +106,21 @@ public class LoginActivity extends AppCompatActivity {
             catch(Exception e){
                 /*Toast*/
             }
+            //Toast.makeText(LoginActivity.this, "Login ou Mot de passe incorrect", Toast.LENGTH_SHORT).show();
+            if( tokenReceived.getToken() != null)
+                return tokenReceived;
+            else{
+                final Snackbar snackbar = Snackbar.make(findViewById(R.id.boutonConnexion),"Le login et/ou le mot de passe est incorrect", Snackbar.LENGTH_INDEFINITE);
+                snackbar.setAction("OK", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        snackbar.dismiss();
+                    }
+                });
+                snackbar.show();
+                return new TokenReceived();
+            }
 
-            return tokenReceived;
         }
 
         @Override

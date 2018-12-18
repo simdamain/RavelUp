@@ -3,17 +3,18 @@ package com.henallux.ravelup.model;
 import java.util.Date;
 
 public class UserModel {
-    private String login;
-    private String motDePasse;
-    private String confirmeMotDePasse;
-    private String eMail;
-    private Date dateNaissance;
+    private String UserName;
+    private String Password;
+    private String PasswordConfirm;
+    private String Email;
+    //TODO LOGIQUE
+    private Date DateNaissance;
 
     public UserModel(String login, String motDePasse,String confirmeMotDePasse, String eMail, Date dateNaissance) {
-        setLogin(login);
-        setMotDePasse(motDePasse);
-        setConfirmeMotDePasse(confirmeMotDePasse);
-        seteMail(eMail);
+        setUserName(login);
+        setPassword(motDePasse);
+        setPasswordConfirm(confirmeMotDePasse);
+        setEmail(eMail);
         setDateNaissance(dateNaissance);
     }
 
@@ -21,55 +22,55 @@ public class UserModel {
     }
 
 
-    public String getLogin() {
-        return login;
+    public String getUserName() {
+        return UserName;
     }
 
-    public void setLogin(String login) {
-        if(login == null){
-            this.login="";
+    public void setUserName(String userName) {
+        if(userName == null){
+            this.UserName ="";
         }else
-            this.login = login;
+            this.UserName = userName;
     }
 
-    public String getMotDePasse() {
-        return motDePasse;
+    public String getPassword() {
+        return Password;
     }
 
-    public void setMotDePasse(String motDePasse) {
-        if(motDePasse == null){
-            this.motDePasse="";
+    public void setPassword(String password) {
+        if(password == null){
+            this.Password ="";
         }else
-            this.motDePasse = motDePasse;
+            this.Password = password;
     }
 
-    public String getConfirmeMotDePasse() { return confirmeMotDePasse; }
+    public String getPasswordConfirm() { return PasswordConfirm; }
 
-    public void setConfirmeMotDePasse(String confirmeMotDePasse) {
-        if(confirmeMotDePasse == null){
-            this.confirmeMotDePasse="";
+    public void setPasswordConfirm(String passwordConfirm) {
+        if(passwordConfirm == null){
+            this.PasswordConfirm ="";
         }else
-            this.confirmeMotDePasse = confirmeMotDePasse;
+            this.PasswordConfirm = passwordConfirm;
     }
 
-    public String geteMail() {
-        return eMail;
+    public String getEmail() {
+        return Email;
     }
 
-    public void seteMail(String eMail) {
-        if(eMail == null){
-            this.eMail="";
+    public void setEmail(String email) {
+        if(email == null){
+            this.Email ="";
         }else
-            this.eMail = eMail;
+            this.Email = email;
     }
 
     public Date getDateNaissance() {
-        return dateNaissance;
+        return DateNaissance;
     }
 
     public void setDateNaissance(Date dateNaissance) {
-        Date minAge= new Date(2006,01,01);
-        if(dateNaissance.compareTo(minAge)>0)
-            this.dateNaissance = dateNaissance;
+        //Date minAge= new Date(2006,01,01);
+        //if(dateNaissance.compareTo(minAge)>0)
+            this.DateNaissance = dateNaissance;
     }
 }
