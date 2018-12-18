@@ -1,7 +1,10 @@
 package com.henallux.ravelup.features.connection;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,20 +20,13 @@ import com.henallux.ravelup.features.menus.MainRedirectActivity;
 import com.henallux.ravelup.model.LoginModel;
 import com.henallux.ravelup.model.TokenReceived;
 
-import java.util.ArrayList;
-
 public class LoginActivity extends AppCompatActivity {
-    //private ConnectionDAO connectionDAO;
-    private TokenReceived tokenReceived;
-    private CheckLogin checkLogin;
+    private TokenReceived mTokenReceived;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        checkLogin = new CheckLogin();
-        checkLogin.execute();
-        //connectionDAO = new ConnectionDAO();
 
         //region logo
         ImageView logo= findViewById(R.id.logo);
@@ -54,19 +50,17 @@ public class LoginActivity extends AppCompatActivity {
                 TextInputLayout login = findViewById(R.id.login_LoginActivity);
                 TextInputLayout motDePasse = findViewById(R.id.motDePasse_LoginActivity);
                 LoginModel loginModel = new LoginModel();
-
-                loginModel.setLogin(login.getEditText().getText().toString());
-                loginModel.setMotDePasse(motDePasse.getEditText().getText().toString());
+                loginModel.setUserName("test");
+                loginModel.setPassword("Test_2018");
+                //loginModel.setUserName(login.getEditText().getText().toString());
+                //loginModel.setPassword(motDePasse.getEditText().getText().toString());
 
                 try {
-                    //tokenReceived = connectionDAO.checkLogin(loginModel);
-                    if (tokenReceived.getErrorException().equals("") && tokenReceived.getCode() == 200) {
-                        startActivity(new Intent(LoginActivity.this, MainRedirectActivity.class));
-                    }
+                    new CheckLogin().execute(loginModel);
 
                 }
                 catch(Exception e){
-                        Toast.makeText(LoginActivity.this, "Mauvais Login et mot de passe", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, "Indentifiants incorrects", Toast.LENGTH_SHORT).show();
                 }
 
 
@@ -75,22 +69,35 @@ public class LoginActivity extends AppCompatActivity {
         //endregion
     }
 
-    @Override
-    protected void onDestroy(){
-        super.onDestroy();
-        if(checkLogin!=null)
-            checkLogin.cancel(true);
-    }
-    class CheckLogin extends AsyncTask<Void,Void,TokenReceived>{
+    private class CheckLogin extends AsyncTask<LoginModel,Void,TokenReceived>{
         private ConnectionDAO connectionDAO= new ConnectionDAO();
 
         @Override
-        protected TokenReceived doInBackground(Void... Void){
-            LoginModel loginModel = new LoginModel();
+        protected TokenReceived doInBackground(LoginModel... params){
+
             TokenReceived tokenReceived = new TokenReceived();
-            try{ tokenReceived= connectionDAO.checkLogin(loginModel);}
-            catch(Exception e){/**Toast*/}
+
+            try{
+                tokenReceived = connectionDAO.checkLogin(params[0]);
+            }
+            catch(Exception e){
+                /*Toast*/
+            }
+
             return tokenReceived;
+        }
+
+        @Override
+        protected void onPostExecute(TokenReceived tokenReceived) {
+            mTokenReceived = tokenReceived;
+            if (mTokenReceived.getErrorException().equals("") && mTokenReceived.getCode() == 200) {
+                PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
+                        .edit()
+                        .putString("token",mTokenReceived.getToken())
+                        .apply();
+
+                startActivity(new Intent(LoginActivity.this, MainRedirectActivity.class));
+            }
         }
     }
 }

@@ -1,36 +1,36 @@
 package com.henallux.ravelup.model;
 
 public class LoginModel {
-    private String login;
-    private String motDePasse;
+    private String UserName;
+    private String Password;
 
     public LoginModel(String login, String motDePasse) {
-        setLogin(login);
-        setMotDePasse(motDePasse);
+        setUserName(login);
+        setPassword(motDePasse);
     }
 
     public LoginModel() {
     }
 
-    public String getLogin() {
-        return login;
+    public String getUserName() {
+        return UserName;
     }
 
-    public void setLogin(String login) {
-        if(login == null){
-            this.login="";
+    public void setUserName(String userName) {
+        if(userName == null){
+            this.UserName ="";
         }else
-        this.login = login;
+        this.UserName = userName;
     }
 
-    public String getMotDePasse() {
-        return motDePasse;
+    public String getPassword() {
+        return Password;
     }
 
-    public void setMotDePasse(String motDePasse) {
-        if(motDePasse == null){
-            this.motDePasse="";
+    public void setPassword(String password) {
+        if(password == null){
+            this.Password ="";
         }else
-            this.motDePasse = motDePasse;
+            this.Password = password;
     }
 }

@@ -3,6 +3,7 @@ package com.henallux.ravelup.model;
 import java.util.Date;
 
 public class TokenReceived {
+
     private String token;
     private int code;
     private Date expirationDate;

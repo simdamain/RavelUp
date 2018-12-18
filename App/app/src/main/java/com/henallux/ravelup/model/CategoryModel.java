@@ -1,15 +1,15 @@
 package com.henallux.ravelup.model;
 
-public class CategorieModel {
+public class CategoryModel {
     private Long id;
     private String libelle;
 
-    public CategorieModel(Long id, String libelle) {
+    public CategoryModel(Long id, String libelle) {
         setId(id);
         setLibelle(libelle);
     }
 
-    public CategorieModel() {
+    public CategoryModel() {
     }
 
     public Long getId() {

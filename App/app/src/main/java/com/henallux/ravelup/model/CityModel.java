@@ -1,19 +1,19 @@
 package com.henallux.ravelup.model;
 
-public class VilleModel {
+public class CityModel {
     private long id;
     private String libelle;
     private int codePostal;
-    private PaysModel pays;
+    private CountryModel pays;
 
-    public VilleModel(long id, String libelle, int codePostal, PaysModel pays) {
+    public CityModel(long id, String libelle, int codePostal, CountryModel pays) {
         setId(id);
         setLibelle(libelle);
         setCodePostal(codePostal);
         setPays(pays);
     }
 
-    public VilleModel() {
+    public CityModel() {
     }
 
     public long getId() {
@@ -40,11 +40,11 @@ public class VilleModel {
         this.codePostal = codePostal;
     }
 
-    public PaysModel getPays() {
+    public CountryModel getPays() {
         return pays;
     }
 
-    public void setPays(PaysModel pays) {
+    public void setPays(CountryModel pays) {
         this.pays = pays;
     }
 }

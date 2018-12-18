@@ -83,7 +83,7 @@
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/login"
+        android:id="@+id/userName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -103,7 +103,7 @@
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/motDePasse"
+        android:id="@+id/password"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -113,7 +113,7 @@
         android:layout_marginRight="8dp"
         app:layout_constraintEnd_toStartOf="@+id/guideline13"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login">
+        app:layout_constraintTop_toBottomOf="@+id/userName">
 
         <android.support.design.widget.TextInputEditText
             android:layout_width="match_parent"
@@ -133,7 +133,7 @@
         android:layout_marginRight="8dp"
         app:layout_constraintEnd_toStartOf="@+id/guideline13"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/motDePasse">
+        app:layout_constraintTop_toBottomOf="@+id/password">
 
         <android.support.design.widget.TextInputEditText
             android:layout_width="match_parent"

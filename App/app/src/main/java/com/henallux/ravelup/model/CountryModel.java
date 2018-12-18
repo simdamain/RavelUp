@@ -1,15 +1,15 @@
 package com.henallux.ravelup.model;
 
-public class PaysModel {
+public class CountryModel {
     private long id;
     private String nom;
 
-    public PaysModel(long id, String nom) {
+    public CountryModel(long id, String nom) {
         setId(id);
         setNom(nom);
     }
 
-    public PaysModel() {
+    public CountryModel() {
     }
 
     public long getId() {
