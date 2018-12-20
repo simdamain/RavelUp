@@ -37,7 +37,7 @@ public class ConnectionDAO{
 
         try {
 
-            URL url = new URL(connectionString+"Jwt");
+            URL url = new URL("http://ravelapidb.azurewebsites.net/api/Jwt");
             HttpURLConnection connection = (HttpURLConnection)url.openConnection();
 
             connection.setRequestMethod("POST");

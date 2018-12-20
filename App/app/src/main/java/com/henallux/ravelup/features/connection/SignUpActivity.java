@@ -109,9 +109,10 @@ public class SignUpActivity extends AppCompatActivity {
                     hasError=true;
                 }
 
-                /*user.setPassword("Test789_si");
+                user.setPassword("Test789_si");
                 user.setPasswordConfirm("Test789_si");
-                user.setDateNaissance(new Date(1998,2,20));*/
+                user.setDateNaissance(new Date(1998,2,20));
+                user.setCity(1);
 
                 if(!hasError){
                     SecondSignUp signUp = new SecondSignUp();

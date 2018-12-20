@@ -4,9 +4,9 @@ public class LoginModel {
     private String UserName;
     private String Password;
 
-    public LoginModel(String login, String motDePasse) {
-        setUserName(login);
-        setPassword(motDePasse);
+    public LoginModel(String userName, String password) {
+        setUserName(userName);
+        setPassword(password);
     }
 
     public LoginModel() {
