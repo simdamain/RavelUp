@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 public class MapDAO {
     public ArrayList<CategoryModel> getAllCategories(TokenReceived token)throws Exception{
+
         URL url = new URL("http://ravelapidb.azurewebsites.net/api/Categorie");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
