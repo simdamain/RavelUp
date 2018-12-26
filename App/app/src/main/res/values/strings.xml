@@ -23,7 +23,7 @@
     <string name="connexion_RedirectPage">Connexion</string>
     <string name="inscription_RedirectPage">Inscription</string>
     <string name="main_redirect_ravel_text">Ravel</string>
-    <string name="main_redirect_maps_text">Cartes</string>
+    <string name="main_redirect_maps_text">Carte</string>
     <string name="title_activity_map">Map</string>
     <string name="titre_QrCodePage">Scanner votre QR Code :</string>
     <string name="QR_code_reader_QRCodePage">Scannez le QR Code</string>
@@ -34,4 +34,20 @@
     <string name="email_signUpPage">Email</string>
     <string name="confirmer_votre_mot_de_passe_signUpPage">Confirmer votre mot de passe</string>
     <string name="confirmez_votre_mot_de_passe_signUpPage">Confirmez votre mot de passe</string>
+    <string name="d_j_venu_connectez_vous_ici">Déjà venu ? Connectez vous ici</string>
+    <string name="nouveau_ici_inscrivez_vous_ici">Nouveau ici ? Inscrivez vous ici</string>
+    <string name="ravelup">RavelUp</string>
+    <string name="login_signUpActivity">Login</string>
+    <string name="mot_de_passe_signUpActivity">Mot de passe</string>
+    <string name="confirmez_votre_mot_de_passe_signUpActivity">Confirmez votre mot de passe</string>
+    <string name="email_signUpActivity">email</string>
+    <string name="date_de_naissance_signUpActivity">Cliquez pour selectionnez votre date de naissance</string>
+    <string name="inscription_signUpActivity">Inscription</string>
+    <string name="descriptionRavel_mainMenuActivity">Infos sur le point d\'interêt et balades aux alentours</string>
+    <string name="descriptionCarte_mainMenuActivity">Infos sur les points d\'interêt aux alentours</string>
+    <string name="titre_mainMenuActivity">RavelUp</string>
+    <string name="annee_SignUpActivity">Année</string>
+    <string name="mois_SignUpActivity">Mois</string>
+    <string name="jour_SignUpActivity">Jour</string>
+    <string name="date_de_naissance_SignUpActivity">Date de naissance :</string>
 </resources>

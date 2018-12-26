@@ -1,8 +1,8 @@
 package com.henallux.ravelup.model;
 
 public class CategoryModel {
-    private Long Id;
-    private String Libelle;
+    private Long id;
+    private String libelle;
 
     public CategoryModel(Long id, String libelle) {
         setId(id);
@@ -17,18 +17,18 @@ public class CategoryModel {
     }
 
     public Long getId() {
-        return Id;
+        return id;
     }
 
     public void setId(Long id) {
-        this.Id = id;
+        this.id = id;
     }
 
     public String getLibelle() {
-        return Libelle;
+        return libelle;
     }
 
     public void setLibelle(String libelle) {
-        this.Libelle = libelle;
+        this.libelle = libelle;
     }
 }

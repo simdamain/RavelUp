@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.henallux.ravelup.R;
 import com.henallux.ravelup.features.connection.LoginActivity;
@@ -33,6 +34,11 @@ public class RedirectActivity extends AppCompatActivity {
                 startActivity(new Intent(RedirectActivity.this, SignUpActivity.class));
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        Toast.makeText(getApplicationContext(), "Bouton retour désactivé", Toast.LENGTH_SHORT).show();
     }
 
 }

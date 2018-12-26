@@ -9,7 +9,7 @@ public class UserModel {
     private String Email;
     //TODO LOGIQUE
     private Date DateNaissance;
-    private int city;
+    private int idVille;
 
     public UserModel(String login, String motDePasse,String confirmeMotDePasse, String eMail, Date dateNaissance,int city) {
         setUserName(login);
@@ -17,7 +17,7 @@ public class UserModel {
         setPasswordConfirm(confirmeMotDePasse);
         setEmail(eMail);
         setDateNaissance(dateNaissance);
-        setCity(city);
+        setIdVille(city);
     }
 
     public UserModel() {
@@ -76,11 +76,11 @@ public class UserModel {
             this.DateNaissance = dateNaissance;
     }
 
-    public int getCity() {
-        return city;
+    public int getIdVille() {
+        return idVille;
     }
 
-    public void setCity(int city) {
-        this.city = city;
+    public void setIdVille(int idVille) {
+        this.idVille = idVille;
     }
 }

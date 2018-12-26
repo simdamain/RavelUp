@@ -1,50 +1,58 @@
 package com.henallux.ravelup.model;
 
 public class CityModel {
-    private long id;
-    private String libelle;
-    private int codePostal;
-    private CountryModel pays;
+    private int Id;
+    private String Libelle;
+    private int CodePostal;
+    private CountryModel Pays;
 
-    public CityModel(long id, String libelle, int codePostal, CountryModel pays) {
+    public CityModel(int id, String libelle, int codePostal, CountryModel pays) {
         setId(id);
         setLibelle(libelle);
         setCodePostal(codePostal);
         setPays(pays);
     }
 
+    public CityModel(int id,String libelle, int codePostal) {
+        setId(id);
+        setLibelle(libelle);
+        setCodePostal(codePostal);
+    }
+
     public CityModel() {
     }
 
-    public long getId() {
-        return id;
+    public int getId() {
+        return Id;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setId(int id) {
+        this.Id = id;
     }
 
     public String getLibelle() {
-        return libelle;
+        return Libelle;
     }
 
     public void setLibelle(String libelle) {
-        this.libelle = libelle;
+        this.Libelle = libelle;
     }
 
     public int getCodePostal() {
-        return codePostal;
+        return CodePostal;
     }
 
     public void setCodePostal(int codePostal) {
-        this.codePostal = codePostal;
+        this.CodePostal = codePostal;
     }
 
     public CountryModel getPays() {
-        return pays;
+        return Pays;
     }
 
     public void setPays(CountryModel pays) {
-        this.pays = pays;
+        this.Pays = pays;
     }
+
+    public String toSpinner(){return getLibelle()+" "+getCodePostal();}
 }

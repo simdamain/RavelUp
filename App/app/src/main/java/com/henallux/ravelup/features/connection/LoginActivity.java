@@ -45,10 +45,9 @@ public class LoginActivity extends AppCompatActivity {
 
                 LoginModel loginModel = new LoginModel();
                 Boolean hasError = false;
-                loginModel.setUserName("test");
-                loginModel.setPassword("Test_2018");
 
-                /*TextInputLayout login = findViewById(R.id.login_LoginActivity);
+
+                TextInputLayout login = findViewById(R.id.login_LoginActivity);
                 String loginValue = login.getEditText().getText().toString();
                 login.setError(null);
                 if(!loginValue.equals("")){
@@ -65,7 +64,7 @@ public class LoginActivity extends AppCompatActivity {
                 } else {
                     password.setError("Ce champs ne peut être vide");
                     hasError=true;
-                }*/
+                }
 
 
                 if(!hasError) {

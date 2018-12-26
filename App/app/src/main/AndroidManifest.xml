@@ -45,11 +45,11 @@
         <activity android:name=".features.map.MapMenuActivity" />
         <activity android:name=".features.connection.LoginActivity" />
         <activity android:name=".features.menus.RedirectActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
         </activity>
         <activity android:name=".features.menus.MainRedirectActivity" />
         <activity

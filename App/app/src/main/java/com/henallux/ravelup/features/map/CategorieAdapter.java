@@ -1,14 +1,12 @@
 package com.henallux.ravelup.features.map;
 
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.Switch;
 
 import com.henallux.ravelup.R;
-import com.henallux.ravelup.model.CategoryModel;
 
 import java.util.ArrayList;
 
@@ -17,7 +15,7 @@ public class CategorieAdapter extends RecyclerView.Adapter<CategorieAdapter.MyVi
 
     public static class MyViewHolder extends RecyclerView.ViewHolder{
         public View Layout;
-        public SwitchCompat switchCategorie;
+        public Switch switchCategorie;
         public MyViewHolder(View v){
             super(v);
             Layout= v;
