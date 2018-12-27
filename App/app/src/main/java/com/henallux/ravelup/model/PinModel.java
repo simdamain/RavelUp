@@ -3,7 +3,7 @@ package com.henallux.ravelup.model;
 import java.util.ArrayList;
 
 public class PinModel {
-    private ArrayList<Integer> idCategories;
+    private ArrayList<Long>idCategories;
     private double longitude;
     private double latitude;
     private double rayon;
@@ -12,18 +12,18 @@ public class PinModel {
     public PinModel() {
     }
 
-    public PinModel(ArrayList<Integer> idCategories, double longitude, double latitude, double rayon) {
+    public PinModel(ArrayList<Long>idCategories, double longitude, double latitude, double rayon) {
         setIdCategories(idCategories);
         setLatitude(latitude);
         setLongitude(longitude);
         setRayon(rayon);
     }
 
-    public ArrayList<Integer> getIdCategories() {
+    public ArrayList<Long> getIdCategories() {
         return idCategories;
     }
 
-    public void setIdCategories(ArrayList<Integer> idCategories) {
+    public void setIdCategories(ArrayList<Long> idCategories) {
         this.idCategories = idCategories;
     }
 

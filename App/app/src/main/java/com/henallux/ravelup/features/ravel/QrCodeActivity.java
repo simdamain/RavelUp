@@ -115,7 +115,6 @@ public class QrCodeActivity extends AppCompatActivity {
                 case RequestCameraPermissionID: {
                     if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-
                             return;
                         }
                         try {
@@ -174,46 +173,6 @@ public class QrCodeActivity extends AppCompatActivity {
             }
         };
 
-        @Override
-        public boolean onCreateOptionsMenu(Menu menu) {
-            //if (!token.equals(""))
-                //getMenuInflater().inflate(R.menu.menu_main_sign_out, menu);
-            //else
-                //getMenuInflater().inflate(R.menu.menu_main_sign_in, menu);
-            return true;
-        }
-
-        @Override
-        public boolean onOptionsItemSelected(MenuItem item){
-
-            /*switch (item.getItemId())
-            {
-                case R.id.profile:
-                // tester si tu as internet
-                    activeNetwork = connectivityManager.getActiveNetworkInfo();
-                    isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-                    if(isConnected) {
-                        Intent profile = new Intent(QrCodeActivity.this, UserProfileActivity.class);
-                        startActivity(profile);
-                    }
-                    else{
-                        Toast.makeText(QrCodeActivity.this, R.string.connectionMessage, Toast.LENGTH_LONG).show();
-                    }
-                    return true;
-                    // end internet
-                case R.id.sign_in:
-                    startActivity(new Intent(QrCodeActivity.this, LoginActivity.class));
-                    return true;
-                case R.id.sign_out:
-                    editor.putString("token", "");
-                    editor.commit();
-                    startActivity(new Intent(QrCodeActivity.this, MainActivity.class));
-                    return true;
-                default:
-                    return super.onOptionsItemSelected(item);
-            }*/
-            return true;
-        }
     }
 
 

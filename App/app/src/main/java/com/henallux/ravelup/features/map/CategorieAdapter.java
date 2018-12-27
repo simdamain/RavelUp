@@ -7,11 +7,12 @@ import android.view.ViewGroup;
 import android.widget.Switch;
 
 import com.henallux.ravelup.R;
+import com.henallux.ravelup.model.CategoryModel;
 
 import java.util.ArrayList;
 
 public class CategorieAdapter extends RecyclerView.Adapter<CategorieAdapter.MyViewHolder>{
-    private ArrayList<String> dataset;
+    private ArrayList<CategoryModel> dataset;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder{
         public View Layout;
@@ -23,7 +24,7 @@ public class CategorieAdapter extends RecyclerView.Adapter<CategorieAdapter.MyVi
         }
     }
 
-    public CategorieAdapter(ArrayList<String> myDataset){
+    public CategorieAdapter(ArrayList<CategoryModel> myDataset){
         dataset= myDataset;
     }
 
@@ -35,7 +36,7 @@ public class CategorieAdapter extends RecyclerView.Adapter<CategorieAdapter.MyVi
     }
 
     public void onBindViewHolder(MyViewHolder holder,int position){
-        holder.switchCategorie.setText(dataset.get(position));
+        holder.switchCategorie.setText(dataset.get(position).getLibelle());
     }
 
     public int getItemCount(){

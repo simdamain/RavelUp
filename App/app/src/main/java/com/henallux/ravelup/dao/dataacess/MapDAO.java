@@ -10,7 +10,9 @@ import com.henallux.ravelup.model.TokenReceived;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -57,29 +59,39 @@ public class MapDAO {
     public ArrayList<PointOfInterestModel> getAllPins(TokenReceived token, PinModel pin)throws Exception{
         URL url = new URL("http://ravelapidb.azurewebsites.net/api/PointInteret/ByCategorie");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-type","application/json");
+        connection.setRequestProperty("Authorization","Bearer " +token.getToken());
+
+        connection.setDoOutput(true);
         connection.setDoInput(true);
+
         OutputStream outputStream = connection.getOutputStream();
         OutputStreamWriter streamWriter = new OutputStreamWriter(outputStream);
+
         connection.connect();
-        streamWriter.write(gsonBuilder.toJson(token));
         streamWriter.write(gsonBuilder.toJson(pin));
         streamWriter.flush();
         streamWriter.close();
-        BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        String test = br.readLine();
-        BufferedReader buffer = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+
+//        InputStream inputStream = new BufferedInputStream(connection.getInputStream());
+//        java.util.Scanner scanner = new java.util.Scanner(inputStream);
+//        String jsonString = scanner.hasNext() ? scanner.next() : "";
+
+        BufferedReader buffer =new BufferedReader(new InputStreamReader(connection.getInputStream()));
         StringBuilder builder = new StringBuilder();
-        String stringJSON = "", line;
-        while ((line = buffer.readLine()) != null) {
+        String jsonString="",line;
+        while((line=buffer.readLine())!=null){
             builder.append(line);
         }
         buffer.close();
-        stringJSON = builder.toString();
+        jsonString=builder.toString();
+
+
         outputStream.close();
         connection.disconnect();
-        return jsonToPointInteret(stringJSON);
+        return jsonToPointInteret(jsonString);
     }
 
 
@@ -91,12 +103,13 @@ public class MapDAO {
         for (int i=0;i<jsonArray.length();i++){
             JSONObject jsonPin = jsonArray.getJSONObject(i);
             pin= new PointOfInterestModel();
-            pin.setId(jsonPin.getLong("Id"));
-            pin.setNom(jsonPin.getString("Nom"));
-            pin.setDescription(jsonPin.getString("Description"));
-            pin.setLongitude(jsonPin.getDouble("Longitude"));
-            pin.setLatitude(jsonPin.getDouble("Latitude"));
-            pin.setCategorieId(jsonPin.getLong("CategorieId "));
+            pin.setId(jsonPin.getLong("id"));
+            pin.setNom(jsonPin.getString("nom"));
+            pin.setDescription(jsonPin.getString("description"));
+            pin.setLongitude(jsonPin.getDouble("longitude"));
+            pin.setLatitude(jsonPin.getDouble("latitude"));
+            pin.setCategorieId(jsonPin.getLong("categorieId"));
+            pointOfInterest.add(pin);
         }
         return pointOfInterest;
     }

@@ -25,15 +25,21 @@ import android.widget.Toast;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.henallux.ravelup.R;
 import com.henallux.ravelup.dao.dataacess.MapDAO;
 import com.henallux.ravelup.model.PinModel;
 import com.henallux.ravelup.model.PointOfInterestModel;
 import com.henallux.ravelup.model.TokenReceived;
+
+import org.json.JSONArray;
 
 import java.util.ArrayList;
 
@@ -59,29 +65,23 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+        pin= new PinModel();
 
-        token = new TokenReceived();
-        token.setToken(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("token","no Token"));
-
-        pin.setRayon(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getFloat("Rayon",0));
-        pin.setLongitude(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getFloat("Rayon",0));
-
-        //Test internet
-        activeNetwork = connectivityManager.getActiveNetworkInfo();
-        isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-        if(isConnected) {
+//        activeNetwork = connectivityManager.getActiveNetworkInfo();
+//        isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+//        if(isConnected) {
             getLocationPermission();
-        }
-        else{
-            final Snackbar snackbar = Snackbar.make(findViewById(R.id.boutonToCarte),"La connexion internet s'est interrompu", Snackbar.LENGTH_INDEFINITE);
-            snackbar.setAction("OK", new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    snackbar.dismiss();
-                }
-            });
-            snackbar.show();
-        }
+//        }
+//        else{
+//            final Snackbar snackbar = Snackbar.make(findViewById(R.id.boutonToCarte),"La connexion internet s'est interrompu", Snackbar.LENGTH_INDEFINITE);
+//            snackbar.setAction("OK", new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    snackbar.dismiss();
+//                }
+//            });
+//            snackbar.show();
+//        }
 
 
 
@@ -93,25 +93,34 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        pin.setRayon(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getFloat("Rayon",0));
+        pin.setLongitude(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getFloat("Longitude",0));
+        pin.setLatitude(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getFloat("Latitude",0));
+
+        Gson gsonBuilder = new Gson();
+        String jsonToId = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("Categories","");
+        ArrayList idCategories = gsonBuilder.fromJson(jsonToId, ArrayList.class);
+        pin.setIdCategories(idCategories);
+
         if(mLocationPermissionsGranted){
             getDeviseLocation();
         }
         //region ajoutPin
-        activeNetwork = connectivityManager.getActiveNetworkInfo();
-        isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-        if(isConnected) {
+//        activeNetwork = connectivityManager.getActiveNetworkInfo();
+//        isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+//        if(isConnected) {
             new LoadPins().execute(pin);
-        }
-        else{
-            final Snackbar snackbar = Snackbar.make(findViewById(R.id.boutonToCarte),"La connection internet s'est interrompu", Snackbar.LENGTH_INDEFINITE);
-            snackbar.setAction("OK", new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    snackbar.dismiss();
-                }
-            });
-            snackbar.show();
-        }
+//        }
+//        else{
+//            final Snackbar snackbar = Snackbar.make(findViewById(R.id.boutonToCarte),"La connection internet s'est interrompu", Snackbar.LENGTH_INDEFINITE);
+//            snackbar.setAction("OK", new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    snackbar.dismiss();
+//                }
+//            });
+//            snackbar.show();
+//        }
         //endregion
 
     }
@@ -146,8 +155,15 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                             mMap.addMarker(new MarkerOptions().position(location)
                                     .title("Votre position"));
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location,DEFAULT_ZOOM));
-                            pin.setLongitude(currentLocation.getLongitude());
-                            pin.setLatitude(currentLocation.getLatitude());
+
+                            PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
+                                    .edit()
+                                    .putFloat("Longitude",(float)currentLocation.getLongitude())
+                                    .apply();
+                            PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
+                                    .edit()
+                                    .putFloat("Latitude",(float)currentLocation.getLatitude())
+                                    .apply();
                             }else{
                             Toast.makeText(MapActivity.this,"Impossible d'obtenir votre localisation", Toast.LENGTH_LONG).show();
                         }
@@ -167,13 +183,16 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
 
     class LoadPins extends AsyncTask<PinModel,Void,ArrayList<PointOfInterestModel>> {
         private MapDAO mapDAO= new MapDAO();
+        TokenReceived token= new TokenReceived();
+
+
 
         @Override
         protected ArrayList<PointOfInterestModel> doInBackground(PinModel ...params) {
             allPins= new ArrayList<>();
             try {
-                TokenReceived token= new TokenReceived();
                 token.setToken(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("token","no Token"));
+
                 allPins =mapDAO.getAllPins(token,params[0]);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -181,12 +200,44 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             return allPins;
         }
 
-        protected void onPostExecute(ArrayList<PointOfInterestModel> result){
-            for (PointOfInterestModel pin: result){
-                mMap.addMarker(new MarkerOptions().position(new LatLng(pin.getLatitude(),pin.getLongitude()))
-                        .title(pin.getNom())
-                        .snippet(pin.getDescription()));
+        protected void onPostExecute(ArrayList<PointOfInterestModel> result) {
+            for (PointOfInterestModel pin : result) {
+                switch ((int) pin.getCategorieId()) {
+                    case 1:
+                        mMap.addMarker(new MarkerOptions().position(new LatLng(pin.getLatitude(), pin.getLongitude()))
+                                .title(pin.getNom())
+                                .snippet(pin.getDescription()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+                        break;
+                    case 2:
+                        mMap.addMarker(new MarkerOptions().position(new LatLng(pin.getLatitude(), pin.getLongitude()))
+                                .title(pin.getNom())
+                                .snippet(pin.getDescription()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+                        break;
+                    case 3:
+                        mMap.addMarker(new MarkerOptions().position(new LatLng(pin.getLatitude(), pin.getLongitude()))
+                                .title(pin.getNom())
+                                .snippet(pin.getDescription()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+                        break;
+                    case 4:
+                        mMap.addMarker(new MarkerOptions().position(new LatLng(pin.getLatitude(), pin.getLongitude()))
+                                .title(pin.getNom())
+                                .snippet(pin.getDescription()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+                        break;
+                    case 5:
+                        mMap.addMarker(new MarkerOptions().position(new LatLng(pin.getLatitude(), pin.getLongitude()))
+                                .title(pin.getNom())
+                                .snippet(pin.getDescription()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)));
+                        break;
+                    default:
+                        mMap.addMarker(new MarkerOptions().position(new LatLng(pin.getLatitude(), pin.getLongitude()))
+                                .title(pin.getNom())
+                                .snippet(pin.getDescription()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                        break;
+                }
+
             }
+
+
         }
 
         @Override

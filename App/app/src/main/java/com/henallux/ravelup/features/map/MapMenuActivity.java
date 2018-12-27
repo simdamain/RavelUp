@@ -34,7 +34,8 @@ public class MapMenuActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private CategorieAdapter adapter;
-    private ArrayList<String> allCategories;
+    private ArrayList<CategoryModel> allCategories;
+    private ArrayList<Long> idCategories;
     private TokenReceived token;
     private NetworkInfo activeNetwork;
     private boolean isConnected;
@@ -45,9 +46,10 @@ public class MapMenuActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_map);
+        allCategories= new ArrayList<>();
         connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        gsonBuilder = new GsonBuilder().serializeNulls().create();
+        //gsonBuilder = new GsonBuilder().serializeNulls().create();
 
         token = new TokenReceived();
         mRecyclerView = findViewById(R.id.recyclerViewCat);
@@ -112,7 +114,7 @@ public class MapMenuActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //TODO changer le string
-                final Snackbar snackbar = Snackbar.make(findViewById(R.id.menu_carte_activity_help_button), "j'ai pas d'idée", Snackbar.LENGTH_INDEFINITE);
+                final Snackbar snackbar = Snackbar.make(findViewById(R.id.menu_carte_activity_help_button), "Cette catégorie regroupe tous les restaurants dans la zone choisie", Snackbar.LENGTH_INDEFINITE);
                 snackbar.setAction("OK", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -129,35 +131,40 @@ public class MapMenuActivity extends AppCompatActivity {
         map.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                float  radius = (float) ((rayon.getProgress())*0.000001);
-                PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putString("Categories",gsonBuilder.toJson(allCategories)).apply();
-                PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putFloat("Rayon",radius).apply();
+                gsonBuilder= new Gson();
+                String idToJson = gsonBuilder.toJson(idCategories);
+                PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
+                        .edit()
+                        .putString("Categories",idToJson)
+                        .apply();
+                PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
+                        .edit()
+                        .putFloat("Rayon",(float)((rayon.getProgress())*0.000001))
+                        .apply();
                 Intent goToMenu =new Intent(MapMenuActivity.this, MapActivity.class);
                 startActivityForResult(goToMenu,1);
             }
         });
     }
 
-    class LoadCategories extends AsyncTask<TokenReceived,Void,ArrayList<String>> {
+    class LoadCategories extends AsyncTask<TokenReceived,Void,ArrayList<CategoryModel>> {
         private MapDAO mapDAO= new MapDAO();
 
         @Override
-        protected ArrayList<String> doInBackground(TokenReceived ...params) {
-            ArrayList<CategoryModel> categories = new ArrayList<>();
-            allCategories= new ArrayList<>();
+        protected ArrayList<CategoryModel> doInBackground(TokenReceived ...params) {
+            idCategories = new ArrayList<>();
             try {
-                categories =mapDAO.getAllCategories(params[0]);
+                allCategories =mapDAO.getAllCategories(params[0]);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            for (CategoryModel cat: categories){
-                allCategories.add(cat.getLibelle());
+            for(CategoryModel cat : allCategories){
+                idCategories.add(cat.getId());
             }
             return allCategories;
         }
 
-        protected void onPostExecute(ArrayList<String> result){
+        protected void onPostExecute(ArrayList<CategoryModel> result){
             adapter = new CategorieAdapter(result);
             mRecyclerView.setAdapter(adapter);
         }
