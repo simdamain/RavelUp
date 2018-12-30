@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".features.menus.MainRedirectActivity"
-    android:background="#000000">
+    android:background="#FFFFFF"
+    tools:context=".features.menus.MainRedirectActivity">
 
     <TextView
         android:id="@+id/main_redirect_activity_ravel_text"
@@ -16,15 +16,15 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginBottom="4dp"
+        android:layout_marginBottom="24dp"
         android:background="@drawable/app_gradient"
         android:gravity="center"
         android:text="@string/main_redirect_ravel_text"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-        android:textColor="@color/app_color"
-        android:textStyle="italic"
+        android:textColor="@color/white"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/guideline15"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -34,7 +34,7 @@
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
@@ -42,21 +42,87 @@
         android:gravity="center"
         android:text="@string/main_redirect_maps_text"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-        android:textColor="@color/app_color"
-        android:textStyle="italic"
+        android:textColor="@color/white"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/main_redirect_activity_ravel_text" />
+        app:layout_constraintStart_toStartOf="@+id/guideline5"
+        app:layout_constraintTop_toBottomOf="@+id/guideline15" />
 
     <View
         android:id="@+id/guideline15"
         android:layout_width="0dp"
         android:layout_height="3dp"
-        android:background="#000000"
+        android:background="#FFFFFF"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/textview_border"
+        android:gravity="center"
+        android:text="@string/descriptionRavel_mainMenuActivity"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+        android:textColor="@color/app_color"
+        app:layout_constraintBottom_toTopOf="@+id/guideline15"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline5"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/textview_border"
+        android:gravity="center"
+        android:text="@string/descriptionCarte_mainMenuActivity"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+        android:textColor="@color/app_color"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/guideline15" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+        android:gravity="center"
+        android:text="@string/titre_mainMenuActivity"
+        android:textColor="@color/app_color"
+        app:layout_constraintBottom_toTopOf="@+id/main_redirect_activity_places_text"
+        app:layout_constraintEnd_toEndOf="@+id/guideline15"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_redirect_activity_ravel_text" />
 </android.support.constraint.ConstraintLayout>

@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.henallux.ravelup.R;
-import com.henallux.ravelup.features.SplashActivity;
 import com.henallux.ravelup.features.map.MapMenuActivity;
 import com.henallux.ravelup.features.ravel.QrCodeActivity;
 

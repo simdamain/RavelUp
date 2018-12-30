@@ -34,13 +34,6 @@ public class LoginActivity extends AppCompatActivity {
         Glide.with(this).load(R.drawable.logo).into(logo);
         //endregion
 
-//        //region errors
-//        TextInputLayout login = findViewById(R.id.login);
-//        login.setError("mauvais login");
-//        TextInputLayout password = findViewById(R.id.motDePasse);
-//        password.setError("mauvais mot de passe");
-//        //endregion
-
         //region connexion button
         Button connexion = findViewById(R.id.boutonConnexion);
         connexion.setOnClickListener(new View.OnClickListener() {
@@ -52,8 +45,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 LoginModel loginModel = new LoginModel();
                 Boolean hasError = false;
-                //loginModel.setUserName("test");
-                //loginModel.setPassword("Test_2018");
+
 
                 TextInputLayout login = findViewById(R.id.login_LoginActivity);
                 String loginValue = login.getEditText().getText().toString();
@@ -106,7 +98,6 @@ public class LoginActivity extends AppCompatActivity {
             catch(Exception e){
                 /*Toast*/
             }
-            //Toast.makeText(LoginActivity.this, "Login ou Mot de passe incorrect", Toast.LENGTH_SHORT).show();
             if( tokenReceived.getToken() != null)
                 return tokenReceived;
             else{

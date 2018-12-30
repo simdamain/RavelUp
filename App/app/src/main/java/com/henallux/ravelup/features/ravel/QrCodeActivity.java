@@ -11,6 +11,7 @@ import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.SparseArray;
@@ -18,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 import android.widget.TextView;
 
 
@@ -26,6 +28,8 @@ import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
 import com.henallux.ravelup.R;
+import com.henallux.ravelup.dao.dataacess.RavelDAO;
+import com.henallux.ravelup.model.PointOfInterestModel;
 /*import com.henallux.ravelup.features;
 import com.henallux.smartcity.DAO.PlantJSONDAO;
 import com.henallux.smartcity.R;*/
@@ -111,7 +115,6 @@ public class QrCodeActivity extends AppCompatActivity {
                 case RequestCameraPermissionID: {
                     if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-
                             return;
                         }
                         try {
@@ -139,22 +142,29 @@ public class QrCodeActivity extends AppCompatActivity {
                     txtView.post(new Runnable(){
                         @Override
                         public void run(){
-                            //PlantDAO plantDAO = new PlantJSONDAO();
+                            //RavelDAO ravelDAO = new RavelJSONDAO();
 
                             //Create vibrate
                             Vibrator vibrator = (Vibrator)getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
-                            vibrator.vibrate(500);
+                            vibrator.vibrate(250);
 
                             try {
-                                Intent goToDescription = new Intent(QrCodeActivity.this, DescriptionActivity.class);
-                                //Plant plant = plantDAO.getPlantInfos(qrcodes.valueAt(0).displayValue);
-                                //Bundle bundle = new Bundle();
-                                //bundle.putSerializable("plant", plant);
-                                //plantInfo.putExtras(bundle);
-                                startActivity(goToDescription);
+                                /*Intent goToDescription = new Intent(QrCodeActivity.this, DescriptionActivity.class);
+                                PointOfInterestModel point = new PointOfInterestModel();
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable("poitnInteret", point);
+                                goToDescription.putExtras(bundle);
+                                startActivity(goToDescription);*/
                             }
                             catch (Exception e) {
-                                //Toast.makeText(ScanActivity.this, R.string.json_exception_encountered, Toast.LENGTH_LONG).show();
+                                final Snackbar snackbar = Snackbar.make(findViewById(R.id.boutonToCarte),"Il y a eu un problème lors de la lecture du qr code", Snackbar.LENGTH_INDEFINITE);
+                                snackbar.setAction("OK", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        snackbar.dismiss();
+                                    }
+                                });
+                                snackbar.show();
                             }
                         }
                     });
@@ -163,46 +173,6 @@ public class QrCodeActivity extends AppCompatActivity {
             }
         };
 
-        @Override
-        public boolean onCreateOptionsMenu(Menu menu) {
-            //if (!token.equals(""))
-                //getMenuInflater().inflate(R.menu.menu_main_sign_out, menu);
-            //else
-                //getMenuInflater().inflate(R.menu.menu_main_sign_in, menu);
-            return true;
-        }
-
-        @Override
-        public boolean onOptionsItemSelected(MenuItem item){
-
-            /*switch (item.getItemId())
-            {
-                case R.id.profile:
-                // tester si tu as internet
-                    activeNetwork = connectivityManager.getActiveNetworkInfo();
-                    isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-                    if(isConnected) {
-                        Intent profile = new Intent(QrCodeActivity.this, UserProfileActivity.class);
-                        startActivity(profile);
-                    }
-                    else{
-                        Toast.makeText(QrCodeActivity.this, R.string.connectionMessage, Toast.LENGTH_LONG).show();
-                    }
-                    return true;
-                    // end internet
-                case R.id.sign_in:
-                    startActivity(new Intent(QrCodeActivity.this, LoginActivity.class));
-                    return true;
-                case R.id.sign_out:
-                    editor.putString("token", "");
-                    editor.commit();
-                    startActivity(new Intent(QrCodeActivity.this, MainActivity.class));
-                    return true;
-                default:
-                    return super.onOptionsItemSelected(item);
-            }*/
-            return true;
-        }
     }
 
 

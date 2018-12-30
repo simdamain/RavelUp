@@ -7,15 +7,17 @@ public class PointOfInterestModel {
     private String nom;
     private String description;
     private Collection<ImageModel> imageList;
-    private String QrCode;
+    private double longitude;
+    private double latitude;
     private long categorieId;
 
-    public PointOfInterestModel(long id, String nom, String description, Collection<ImageModel> imageList, String qrCode, long categorieId) {
+    public PointOfInterestModel(long id, String nom, String description, Collection<ImageModel> imageList, double longitude,double latitude,long categorieId) {
         setId(id);
         setNom(nom);
         setDescription(description);
         setImageList(imageList);
-        setQrCode(qrCode);
+        setLongitude(longitude);
+        setLatitude(latitude);
         setCategorieId(categorieId);
     }
 
@@ -54,12 +56,20 @@ public class PointOfInterestModel {
         this.imageList = imageList;
     }
 
-    public String getQrCode() {
-        return QrCode;
+    public double getLongitude() {
+        return longitude;
     }
 
-    public void setQrCode(String qrCode) {
-        QrCode = qrCode;
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
     }
 
     public long getCategorieId() {

@@ -1,157 +1,197 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".features.connection.SignUpActivity">
+    android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/signUp_activity_title"
+        android:id="@+id/titre_SignUpPage"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="48dp"
-        android:layout_marginLeft="48dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="48dp"
-        android:layout_marginRight="48dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:gravity="center"
-        android:text="@string/login_activity_title_text"
-        android:textAllCaps="true"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+        android:text="@string/inscription_signUpActivity"
         android:textColor="@color/app_color"
-        android:textStyle="bold"
+        android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/boutonInscription"
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/login_signUpActivity"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="48dp"
-        android:layout_marginLeft="48dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline7"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titre_SignUpPage">
+
+        <android.support.design.widget.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/login_signUpActivity"
+            android:inputType="text"
+            android:maxLines="1"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/password_signUpActivity"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline7"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/login_signUpActivity">
+
+        <android.support.design.widget.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/mot_de_passe_signUpActivity"
+            android:inputType="numberPassword"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/confirmPassword_signUpActivity"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline7"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/password_signUpActivity">
+
+        <android.support.design.widget.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/confirmez_votre_mot_de_passe_signUpActivity"
+            android:inputType="numberPassword"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/email_signUpActivity"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline7"
+        app:layout_constraintTop_toBottomOf="@+id/titre_SignUpPage">
+
+        <android.support.design.widget.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/email_signUpActivity"
+            android:maxLines="1"
+            android:inputType="text"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <Spinner
+        android:id="@+id/spinnerCity"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline7"
+        app:layout_constraintTop_toBottomOf="@+id/month_birthDat_SignUpActivity" />
+
+    <Button
+        android:id="@+id/buttonSignUp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
         android:background="@drawable/ripple_effect"
-        android:text="@string/inscriptionBouton_InscriptionPage"
+        android:text="@string/inscription_signUpActivity"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline13" />
-
-    <TextView
-        android:id="@+id/datePicker"
-        android:layout_width="0dp"
-        android:layout_height="38dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="48dp"
-        android:layout_marginRight="48dp"
-        android:text="@string/datePicker_InscriptionPage"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/guideline13"
-        app:layout_constraintTop_toBottomOf="@+id/signUp_activity_title" />
+        app:layout_constraintStart_toEndOf="@+id/guideline7" />
 
     <android.support.constraint.Guideline
-        android:id="@+id/guideline13"
+        android:id="@+id/guideline7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_begin="290dp" />
+        app:layout_constraintGuide_percent="0.5" />
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/email"
-        android:layout_width="0dp"
-        android:layout_height="56dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="48dp"
-        android:layout_marginRight="48dp"
-        android:maxLines="1"
-        android:inputType="text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/guideline13"
-        app:layout_constraintTop_toBottomOf="@+id/datePicker">
-
-        <android.support.design.widget.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/email_signUpPage"
-            android:maxLines="1"
-            android:inputType="text"/>
-    </android.support.design.widget.TextInputLayout>
-
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/userName"
-        android:layout_width="0dp"
+        android:id="@+id/day_birthDat_SignUpActivity"
+        android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:maxLines="1"
-        android:inputType="text"
-        app:layout_constraintEnd_toStartOf="@+id/guideline13"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/signUp_activity_title">
+        app:layout_constraintStart_toStartOf="@+id/guideline7"
+        app:layout_constraintTop_toBottomOf="@+id/email_signUpActivity">
 
         <android.support.design.widget.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/login_signUpPage"
-            android:maxLines="1"
-            android:inputType="text"/>
+            android:hint="@string/jour_SignUpActivity"
+            android:inputType="number"
+            android:maxLines="1"/>
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/password"
-        android:layout_width="0dp"
+        android:id="@+id/month_birthDat_SignUpActivity"
+        android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:maxLines="1"
-        android:inputType="text"
-        app:layout_constraintEnd_toStartOf="@+id/guideline13"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/userName">
+        app:layout_constraintStart_toEndOf="@+id/day_birthDat_SignUpActivity"
+        app:layout_constraintTop_toBottomOf="@+id/email_signUpActivity">
 
         <android.support.design.widget.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/mot_de_passe_signUpPage"
-            android:inputType="textPassword"/>
+            android:hint="@string/mois_SignUpActivity"
+            android:inputType="number"
+            android:maxLines="1"/>
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/passwordConfirm"
-        android:layout_width="0dp"
+        android:id="@+id/year_birthDat_SignUpActivity"
+        android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:maxLines="1"
-        android:inputType="text"
-        app:layout_constraintEnd_toStartOf="@+id/guideline13"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/password">
+        app:layout_constraintStart_toEndOf="@+id/month_birthDat_SignUpActivity"
+        app:layout_constraintTop_toBottomOf="@+id/email_signUpActivity">
 
         <android.support.design.widget.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/confirmez_votre_mot_de_passe_signUpPage"
-            android:inputType="textPassword"/>
+            android:hint="@string/annee_SignUpActivity"
+            android:inputType="number"
+            android:maxLines="1"/>
     </android.support.design.widget.TextInputLayout>
 
 

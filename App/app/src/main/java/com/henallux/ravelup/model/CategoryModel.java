@@ -9,6 +9,10 @@ public class CategoryModel {
         setLibelle(libelle);
     }
 
+    public CategoryModel(String libelle) {
+        setLibelle(libelle);
+    }
+
     public CategoryModel() {
     }
 

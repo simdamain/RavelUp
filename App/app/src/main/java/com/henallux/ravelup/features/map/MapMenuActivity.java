@@ -1,27 +1,88 @@
 package com.henallux.ravelup.features.map;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.henallux.ravelup.R;
+import com.henallux.ravelup.dao.dataacess.MapDAO;
+import com.henallux.ravelup.features.ravel.QrCodeActivity;
+import com.henallux.ravelup.model.CategoryModel;
+import com.henallux.ravelup.model.TokenReceived;
+
+import java.util.ArrayList;
 
 public class MapMenuActivity extends AppCompatActivity {
+    private LoadCategories loadCategories;
+    private RecyclerView mRecyclerView;
+    private RecyclerView.LayoutManager layoutManager;
+    private CategorieAdapter adapter;
+    private ArrayList<CategoryModel> allCategories;
+    private ArrayList<Long> idCategories;
+    private TokenReceived token;
+    private NetworkInfo activeNetwork;
+    private boolean isConnected;
+    private ConnectivityManager connectivityManager;
+    private Gson gsonBuilder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_map);
+        allCategories= new ArrayList<>();
+        connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
 
-    // slider
+        //gsonBuilder = new GsonBuilder().serializeNulls().create();
+
+        token = new TokenReceived();
+        mRecyclerView = findViewById(R.id.recyclerViewCat);
+        layoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(layoutManager);
+
+        token.setToken(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("token","no Token"));
+
+        //Test internet
+        activeNetwork = connectivityManager.getActiveNetworkInfo();
+        isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        if(isConnected) {
+            loadCategories= new LoadCategories();
+            loadCategories.execute(token);
+        }
+        else{
+            final Snackbar snackbar = Snackbar.make(findViewById(R.id.boutonToCarte),"La connection internet s'est interrompu", Snackbar.LENGTH_INDEFINITE);
+            snackbar.setAction("OK", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    snackbar.dismiss();
+                }
+            });
+            snackbar.show();
+        }
+
+
+
+
+
+    //region Slider
         // SeekBar
-        SeekBar rayon = findViewById(R.id.seekBarRayon );
+        final SeekBar rayon = findViewById(R.id.seekBarRayon );
          final TextView rayonText = findViewById(R.id.rayonText);
 
         rayonText.setText("Rayon : " + rayon.getProgress()+"m");
@@ -46,14 +107,14 @@ public class MapMenuActivity extends AppCompatActivity {
             public void onStartTrackingTouch(SeekBar seekBar) {
             }
         });
-
-
+        //endregion
+    // region Help button
         ImageView helpButton = findViewById(R.id.menu_carte_activity_help_button);
         helpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //TODO changer le string
-                final Snackbar snackbar = Snackbar.make(findViewById(R.id.menu_carte_activity_help_button), "j'ai pas d'idée", Snackbar.LENGTH_INDEFINITE);
+                final Snackbar snackbar = Snackbar.make(findViewById(R.id.menu_carte_activity_help_button), "Cette catégorie regroupe tous les restaurants dans la zone choisie", Snackbar.LENGTH_INDEFINITE);
                 snackbar.setAction("OK", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -63,18 +124,54 @@ public class MapMenuActivity extends AppCompatActivity {
                 snackbar.show();
             }
         });
-
-
-
+        //endregion
 
     //button MapActivity
         Button map = findViewById(R.id.boutonToCarte);
         map.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                gsonBuilder= new Gson();
+                String idToJson = gsonBuilder.toJson(idCategories);
+                PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
+                        .edit()
+                        .putString("Categories",idToJson)
+                        .apply();
+                PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
+                        .edit()
+                        .putFloat("Rayon",(float)((rayon.getProgress())*0.000001))
+                        .apply();
                 Intent goToMenu =new Intent(MapMenuActivity.this, MapActivity.class);
                 startActivityForResult(goToMenu,1);
             }
         });
+    }
+
+    class LoadCategories extends AsyncTask<TokenReceived,Void,ArrayList<CategoryModel>> {
+        private MapDAO mapDAO= new MapDAO();
+
+        @Override
+        protected ArrayList<CategoryModel> doInBackground(TokenReceived ...params) {
+            idCategories = new ArrayList<>();
+            try {
+                allCategories =mapDAO.getAllCategories(params[0]);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            for(CategoryModel cat : allCategories){
+                idCategories.add(cat.getId());
+            }
+            return allCategories;
+        }
+
+        protected void onPostExecute(ArrayList<CategoryModel> result){
+            adapter = new CategorieAdapter(result);
+            mRecyclerView.setAdapter(adapter);
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+        }
     }
 }

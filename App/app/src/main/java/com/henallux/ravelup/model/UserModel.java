@@ -9,13 +9,15 @@ public class UserModel {
     private String Email;
     //TODO LOGIQUE
     private Date DateNaissance;
+    private int idVille;
 
-    public UserModel(String login, String motDePasse,String confirmeMotDePasse, String eMail, Date dateNaissance) {
+    public UserModel(String login, String motDePasse,String confirmeMotDePasse, String eMail, Date dateNaissance,int city) {
         setUserName(login);
         setPassword(motDePasse);
         setPasswordConfirm(confirmeMotDePasse);
         setEmail(eMail);
         setDateNaissance(dateNaissance);
+        setIdVille(city);
     }
 
     public UserModel() {
@@ -72,5 +74,13 @@ public class UserModel {
         //Date minAge= new Date(2006,01,01);
         //if(dateNaissance.compareTo(minAge)>0)
             this.DateNaissance = dateNaissance;
+    }
+
+    public int getIdVille() {
+        return idVille;
+    }
+
+    public void setIdVille(int idVille) {
+        this.idVille = idVille;
     }
 }
