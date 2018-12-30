@@ -22,9 +22,8 @@ import java.util.ArrayList;
 
 public class MapDAO {
     private Gson gsonBuilder = new GsonBuilder()
-            .setDateFormat("yyyy-MM-dd")
-            .serializeNulls()
-            .create();
+        .serializeNulls()
+        .create();
     public ArrayList<CategoryModel> getAllCategories(TokenReceived token)throws Exception{
 
         URL url = new URL("http://ravelapidb.azurewebsites.net/api/Categorie");
@@ -43,14 +42,15 @@ public class MapDAO {
         return jsonToCategories(stringJSON);
     }
 
-    private ArrayList<CategoryModel>jsonToCategories(String stringJSON) throws Exception
-    {
+    private ArrayList<CategoryModel>jsonToCategories(String stringJSON) throws Exception {
         ArrayList<CategoryModel> categories= new ArrayList<>();
         CategoryModel category;
         JSONArray jsonArray=new JSONArray(stringJSON);
         for (int i=0;i<jsonArray.length();i++){
             JSONObject jsonCategory = jsonArray.getJSONObject(i);
-            category= new CategoryModel(jsonCategory.getLong("id"),jsonCategory.getString("libelle"));
+            category= new CategoryModel();
+            category.setId(jsonCategory.getLong("id"));
+            category.setLibelle(jsonCategory.getString("libelle"));
             categories.add(category);
         }
         return categories;
@@ -75,10 +75,6 @@ public class MapDAO {
         streamWriter.flush();
         streamWriter.close();
 
-//        InputStream inputStream = new BufferedInputStream(connection.getInputStream());
-//        java.util.Scanner scanner = new java.util.Scanner(inputStream);
-//        String jsonString = scanner.hasNext() ? scanner.next() : "";
-
         BufferedReader buffer =new BufferedReader(new InputStreamReader(connection.getInputStream()));
         StringBuilder builder = new StringBuilder();
         String jsonString="",line;
@@ -91,12 +87,10 @@ public class MapDAO {
 
         outputStream.close();
         connection.disconnect();
-        return jsonToPointInteret(jsonString);
+        return jsonToPointsInterets(jsonString);
     }
 
-
-    private ArrayList<PointOfInterestModel>jsonToPointInteret(String stringJSON) throws Exception
-    {
+    private ArrayList<PointOfInterestModel>jsonToPointsInterets(String stringJSON) throws Exception {
         ArrayList<PointOfInterestModel> pointOfInterest= new ArrayList<>();
         PointOfInterestModel pin;
         JSONArray jsonArray=new JSONArray(stringJSON);

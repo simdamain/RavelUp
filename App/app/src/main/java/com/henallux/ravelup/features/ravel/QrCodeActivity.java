@@ -3,7 +3,6 @@ package com.henallux.ravelup.features.ravel;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -15,8 +14,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.SparseArray;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -27,22 +24,18 @@ import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
+import com.google.gson.Gson;
 import com.henallux.ravelup.R;
-import com.henallux.ravelup.dao.dataacess.RavelDAO;
-import com.henallux.ravelup.model.PointOfInterestModel;
+import com.henallux.ravelup.model.TokenReceived;
 /*import com.henallux.ravelup.features;
 import com.henallux.smartcity.DAO.PlantJSONDAO;
 import com.henallux.smartcity.R;*/
-
-import org.json.JSONException;
 
 import java.io.IOException;
 
 
 public class QrCodeActivity extends AppCompatActivity {
-        private String token;
-        private SharedPreferences preferences;
-        private SharedPreferences.Editor editor;
+        private TokenReceived token;
         private ConnectivityManager connectivityManager;
         private NetworkInfo activeNetwork;
         private boolean isConnected;
@@ -50,20 +43,19 @@ public class QrCodeActivity extends AppCompatActivity {
         private TextView txtView;
         private BarcodeDetector barcodeDetector;
         private CameraSource cameraSource;
+        private Gson gsonBuilder;
+        final int RequestCameraPermissionID = 1001;
         //to avoid spamming scan of a qr code
         private boolean hasScanned = false;
-        final int RequestCameraPermissionID = 1001;
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_qr_code);
-
             connectivityManager = (ConnectivityManager) QrCodeActivity.this.getSystemService(Context.CONNECTIVITY_SERVICE);
+            token = new TokenReceived();
+            token.setToken(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("Token","no Token"));
 
-            preferences = PreferenceManager.getDefaultSharedPreferences(this);
-            token = preferences.getString("token", "");
-            editor=preferences.edit();
 
             cameraPreview =findViewById(R.id.scanner);
             txtView =findViewById(R.id.explanationQRDestination);
@@ -73,7 +65,7 @@ public class QrCodeActivity extends AppCompatActivity {
                     .build();
             cameraSource = new CameraSource
                     .Builder(this, barcodeDetector)
-                    .setRequestedPreviewSize(640, 480)
+                    .setRequestedPreviewSize(300,350)
                     .build();
 
             //Add event
@@ -105,7 +97,7 @@ public class QrCodeActivity extends AppCompatActivity {
             @Override
             public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
                 cameraSource.stop();
-                hasScanned=false;
+                hasScanned= false;
             }
         };
 
@@ -142,19 +134,20 @@ public class QrCodeActivity extends AppCompatActivity {
                     txtView.post(new Runnable(){
                         @Override
                         public void run(){
-                            //RavelDAO ravelDAO = new RavelJSONDAO();
+                            gsonBuilder= new Gson();
+                            String json = qrcodes.valueAt(0).displayValue;
 
+                            PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
+                                    .edit()
+                                    .putString("jsonTrajet",json)
+                                    .apply();
                             //Create vibrate
                             Vibrator vibrator = (Vibrator)getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
                             vibrator.vibrate(250);
 
                             try {
-                                /*Intent goToDescription = new Intent(QrCodeActivity.this, DescriptionActivity.class);
-                                PointOfInterestModel point = new PointOfInterestModel();
-                                Bundle bundle = new Bundle();
-                                bundle.putSerializable("poitnInteret", point);
-                                goToDescription.putExtras(bundle);
-                                startActivity(goToDescription);*/
+                                Intent goToDescription = new Intent(QrCodeActivity.this, DescriptionActivity.class);
+                                startActivity(goToDescription);
                             }
                             catch (Exception e) {
                                 final Snackbar snackbar = Snackbar.make(findViewById(R.id.boutonToCarte),"Il y a eu un problème lors de la lecture du qr code", Snackbar.LENGTH_INDEFINITE);

@@ -11,7 +11,16 @@ public class PointOfInterestModel {
     private double latitude;
     private long categorieId;
 
-    public PointOfInterestModel(long id, String nom, String description, Collection<ImageModel> imageList, double longitude,double latitude,long categorieId) {
+    public PointOfInterestModel() {
+    }
+
+    public PointOfInterestModel(long id, String nom, String description) {
+        setId(id);
+        setNom(nom);
+        setDescription(description);
+    }
+
+    public PointOfInterestModel(long id, String nom, String description, Collection<ImageModel> imageList, double longitude, double latitude, long categorieId) {
         setId(id);
         setNom(nom);
         setDescription(description);
@@ -21,8 +30,7 @@ public class PointOfInterestModel {
         setCategorieId(categorieId);
     }
 
-    public PointOfInterestModel() {
-    }
+
 
     public long getId() {
         return id;

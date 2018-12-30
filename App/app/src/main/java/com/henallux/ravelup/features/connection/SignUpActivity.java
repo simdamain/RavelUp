@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -86,6 +87,38 @@ public class SignUpActivity extends AppCompatActivity {
         });
         //endregion
 
+
+        //region help button
+        ImageView helpButtonPassword = findViewById(R.id.help_button_password_signup_activity);
+        helpButtonPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Snackbar snackbar = Snackbar.make(findViewById(R.id.help_button_password_signup_activity), "le mot de passe doit avoir au moins un chiffre, une maj et un caractère spc", Snackbar.LENGTH_INDEFINITE);
+                snackbar.setAction("OK", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        snackbar.dismiss();
+                    }
+                });
+                snackbar.show();
+            }
+        });
+        ImageView helpButtonBirthdate = findViewById(R.id.help_button_birthdate_signup_activity);
+        helpButtonBirthdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Snackbar snackbar = Snackbar.make(findViewById(R.id.help_button_birthdate_signup_activity), "l'application est reservée pour des personnes d'au moins 12ans", Snackbar.LENGTH_INDEFINITE);
+                snackbar.setAction("OK", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        snackbar.dismiss();
+                    }
+                });
+                snackbar.show();
+            }
+        });
+        //endregion
+
         //region inscription
         Button inscription = findViewById(R.id.buttonSignUp);
         inscription.setOnClickListener(new View.OnClickListener() {
@@ -114,10 +147,10 @@ public class SignUpActivity extends AppCompatActivity {
 
                 TextInputLayout confirmedPassword = findViewById(R.id.confirmPassword_signUpActivity);
                 String confirmedPasswordValue = confirmedPassword.getEditText().getText().toString();
-                if(!confirmedPasswordValue.isEmpty()){
+                if(!confirmedPasswordValue.isEmpty() && confirmedPasswordValue == passwordValue ){
                     user.setPasswordConfirm(confirmedPasswordValue);
                 } else {
-                    confirmedPassword.setError("Ce champs ne peut être vide");
+                    confirmedPassword.setError("Ce champs ne peut être vide ou les mots de passe ne correspondent pas");
                     hasError=true;
                 }
 
@@ -153,7 +186,13 @@ public class SignUpActivity extends AppCompatActivity {
                 int yearnb =Integer.parseInt(yearValue)-1900;
                 int monthnb =Integer.parseInt(yearValue)-1;
                 Date date= new Date(yearnb,monthnb,Integer.parseInt(dayValue));
-                user.setDateNaissance(date);
+                if(date.compareTo(new Date(2006,01,01))>0 && date.compareTo(new Date(1900,01,01))<0) {
+                    user.setDateNaissance(date);
+                }
+                else{
+                    year.setError("vous êtes trop jeune pour vous inscrire à cette application ");
+                    hasError=true;
+                }
 
                 String libelleVille = spinnerCities.getSelectedItem().toString();
                 for (CityModel city : allCities){
@@ -165,9 +204,15 @@ public class SignUpActivity extends AppCompatActivity {
                 if(!hasError){
                     try {
                         new signUp().execute(user);
-
                     } catch (Exception e) {
-                        Toast.makeText(SignUpActivity.this, "Les données entrées sont incorrect", Toast.LENGTH_SHORT).show();
+                        final Snackbar snackbar = Snackbar.make(findViewById(R.id.buttonSignUp), "Les informations sont incorrect", Snackbar.LENGTH_INDEFINITE);
+                        snackbar.setAction("OK", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                snackbar.dismiss();
+                            }
+                        });
+                        snackbar.show();
                     }
                 }else
                     hasError = false;

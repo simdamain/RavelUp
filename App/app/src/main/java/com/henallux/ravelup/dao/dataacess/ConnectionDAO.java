@@ -139,8 +139,7 @@ public class ConnectionDAO{
         return jsonToCities(stringJSON);
     }
 
-    private ArrayList<CityModel>jsonToCities(String stringJSON) throws Exception
-    {
+    private ArrayList<CityModel>jsonToCities(String stringJSON) throws Exception {
         ArrayList<CityModel> cities= new ArrayList<>();
         CityModel city;
         JSONArray jsonArray=new JSONArray(stringJSON);

@@ -49,8 +49,6 @@ public class MapMenuActivity extends AppCompatActivity {
         allCategories= new ArrayList<>();
         connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        //gsonBuilder = new GsonBuilder().serializeNulls().create();
-
         token = new TokenReceived();
         mRecyclerView = findViewById(R.id.recyclerViewCat);
         layoutManager = new LinearLayoutManager(this);
@@ -58,34 +56,31 @@ public class MapMenuActivity extends AppCompatActivity {
 
         token.setToken(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("token","no Token"));
 
-        //Test internet
-        activeNetwork = connectivityManager.getActiveNetworkInfo();
-        isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-        if(isConnected) {
-            loadCategories= new LoadCategories();
-            loadCategories.execute(token);
-        }
-        else{
-            final Snackbar snackbar = Snackbar.make(findViewById(R.id.boutonToCarte),"La connection internet s'est interrompu", Snackbar.LENGTH_INDEFINITE);
-            snackbar.setAction("OK", new View.OnClickListener() {
+    //region Test internet
+    activeNetwork = connectivityManager.getActiveNetworkInfo();
+    isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+    if(isConnected) {
+        loadCategories= new LoadCategories();
+        loadCategories.execute(token);
+    }
+    else{
+        final Snackbar snackbar = Snackbar.make(findViewById(R.id.boutonToCarte),"La connection internet s'est interrompu", Snackbar.LENGTH_INDEFINITE);
+        snackbar.setAction("OK", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     snackbar.dismiss();
                 }
             });
-            snackbar.show();
-        }
-
-
-
-
+        snackbar.show();
+    }
+    //endregion
 
     //region Slider
         // SeekBar
         final SeekBar rayon = findViewById(R.id.seekBarRayon );
          final TextView rayonText = findViewById(R.id.rayonText);
 
-        rayonText.setText("Rayon : " + rayon.getProgress()+"m");
+        rayonText.setText("Rayon : " + rayon.getProgress()+" km");
         //
         rayon.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
             int progress = 0;
@@ -95,12 +90,12 @@ public class MapMenuActivity extends AppCompatActivity {
             public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser) {
                 progress = progressValue;
 
-                rayonText.setText("rayon : "+progressValue+"m");
+                rayonText.setText("rayon : "+progressValue+"km");
             }
             // Notification that the user has finished a touch gesture
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                rayonText.setText("rayon : "+progress+"m");
+                rayonText.setText("rayon : "+progress+"km");
 
             }
             @Override
@@ -108,13 +103,28 @@ public class MapMenuActivity extends AppCompatActivity {
             }
         });
         //endregion
+
     // region Help button
         ImageView helpButton = findViewById(R.id.menu_carte_activity_help_button);
         helpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO changer le string
-                final Snackbar snackbar = Snackbar.make(findViewById(R.id.menu_carte_activity_help_button), "Cette catégorie regroupe tous les restaurants dans la zone choisie", Snackbar.LENGTH_INDEFINITE);
+                final Snackbar snackbar = Snackbar.make(findViewById(R.id.menu_carte_activity_help_button), "choisissez les catégories que vous voulez voir afficher sur la carte", Snackbar.LENGTH_INDEFINITE);
+                snackbar.setAction("OK", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        snackbar.dismiss();
+                    }
+                });
+                snackbar.show();
+            }
+        });
+
+        ImageView helpButtonSeeker = findViewById(R.id.menu_carte_activity_help_button);
+        helpButtonSeeker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Snackbar snackbar = Snackbar.make(findViewById(R.id.menu_carte_activity_help_button_seeker), "le rayon représente le zone autour de vous où les différents pin seront afficher", Snackbar.LENGTH_INDEFINITE);
                 snackbar.setAction("OK", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -126,11 +136,12 @@ public class MapMenuActivity extends AppCompatActivity {
         });
         //endregion
 
-    //button MapActivity
+    //region button MapActivity
         Button map = findViewById(R.id.boutonToCarte);
         map.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                idCategories = adapter.getIdCategories();
                 gsonBuilder= new Gson();
                 String idToJson = gsonBuilder.toJson(idCategories);
                 PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
@@ -139,12 +150,14 @@ public class MapMenuActivity extends AppCompatActivity {
                         .apply();
                 PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
                         .edit()
-                        .putFloat("Rayon",(float)((rayon.getProgress())*0.000001))
+                        .putFloat("Rayon",(float)((rayon.getProgress())*0.001))  //le rayon est en km
                         .apply();
+
                 Intent goToMenu =new Intent(MapMenuActivity.this, MapActivity.class);
-                startActivityForResult(goToMenu,1);
+                startActivity(goToMenu);
             }
         });
+        //endregion
     }
 
     class LoadCategories extends AsyncTask<TokenReceived,Void,ArrayList<CategoryModel>> {
@@ -157,9 +170,6 @@ public class MapMenuActivity extends AppCompatActivity {
                 allCategories =mapDAO.getAllCategories(params[0]);
             } catch (Exception e) {
                 e.printStackTrace();
-            }
-            for(CategoryModel cat : allCategories){
-                idCategories.add(cat.getId());
             }
             return allCategories;
         }
