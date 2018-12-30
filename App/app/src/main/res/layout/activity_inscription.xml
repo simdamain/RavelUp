@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="48dp"
         android:layout_marginEnd="48dp"
         android:layout_marginRight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -39,9 +39,9 @@
         <android.support.design.widget.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLines="1"
+            android:hint="@string/login_signUpActivity"
             android:inputType="text"
-            android:hint="@string/login_signUpActivity" />
+            android:maxLines="1" />
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -113,12 +113,12 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="48dp"
         android:layout_marginRight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/day_birthDat_SignUpActivity" />
+        app:layout_constraintTop_toBottomOf="@+id/month_birthDat_SignUpActivity" />
 
     <Button
         android:id="@+id/buttonSignUp"
@@ -144,71 +144,94 @@
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/day_birthDat_SignUpActivity"
-        android:layout_width="70dp"
+        android:layout_width="47dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintStart_toEndOf="@+id/textView8"
         app:layout_constraintTop_toBottomOf="@+id/email_signUpActivity">
 
         <android.support.design.widget.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType = "number"
-            android:maxLines="1"
-            android:hint="@string/jour_SignUpActivity" />
+            android:hint="@string/jour_SignUpActivity"
+            android:inputType="number"
+            android:maxLines="1" />
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/month_birthDat_SignUpActivity"
-        android:layout_width="70dp"
+        android:layout_width="51dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintStart_toEndOf="@+id/day_birthDat_SignUpActivity"
         app:layout_constraintTop_toBottomOf="@+id/email_signUpActivity">
 
         <android.support.design.widget.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType = "number"
-            android:maxLines="1"
-            android:hint="@string/mois_SignUpActivity" />
+            android:hint="@string/mois_SignUpActivity"
+            android:inputType="number"
+            android:maxLines="1" />
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/year_birthDat_SignUpActivity"
-        android:layout_width="70dp"
+        android:layout_width="75dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintStart_toEndOf="@+id/month_birthDat_SignUpActivity"
         app:layout_constraintTop_toBottomOf="@+id/email_signUpActivity">
 
         <android.support.design.widget.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType = "number"
-            android:maxLines="1"
-            android:hint="@string/annee_SignUpActivity" />
+            android:hint="@string/annee_SignUpActivity"
+            android:inputType="number"
+            android:maxLines="1" />
     </android.support.design.widget.TextInputLayout>
 
     <TextView
         android:id="@+id/textView8"
-        android:layout_width="98dp"
-        android:layout_height="0dp"
+        android:layout_width="95dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:layout_marginBottom="8dp"
         android:text="@string/date_de_naissance_SignUpActivity"
         android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/spinnerCity"
+        app:layout_constraintBottom_toBottomOf="@+id/month_birthDat_SignUpActivity"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/email_signUpActivity" />
 
+    <ImageView
+        android:id="@+id/help_button_password_signup_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="24dp"
+        android:contentDescription="@string/help_for_password"
+        android:src="@android:drawable/ic_menu_help"
+        app:layout_constraintStart_toEndOf="@+id/password_signUpActivity"
+        app:layout_constraintTop_toBottomOf="@+id/login_signUpActivity" />
+
+    <ImageView
+        android:id="@+id/help_button_birthdate_signup_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="16dp"
+        android:contentDescription="@string/help_for_birthdate"
+        android:src="@android:drawable/ic_menu_help"
+        app:layout_constraintStart_toEndOf="@+id/year_birthDat_SignUpActivity"
+        app:layout_constraintTop_toBottomOf="@+id/email_signUpActivity" />
 
 </android.support.constraint.ConstraintLayout>

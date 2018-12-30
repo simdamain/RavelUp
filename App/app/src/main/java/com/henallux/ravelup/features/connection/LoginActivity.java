@@ -35,17 +35,13 @@ public class LoginActivity extends AppCompatActivity {
         //endregion
 
         //region connexion button
-        Button connexion = findViewById(R.id.boutonConnexion);
+        Button connexion = findViewById(R.id.connectionButton_login_activity);
         connexion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO verify with api
-                //TokenReceived tokenReceived;
-
 
                 LoginModel loginModel = new LoginModel();
                 Boolean hasError = false;
-
 
                 TextInputLayout login = findViewById(R.id.login_LoginActivity);
                 String loginValue = login.getEditText().getText().toString();
@@ -68,6 +64,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
                 if(!hasError) {
+                    //todo tester si coupure d internet et corriger crash lors de mauvais login/motde passe
                     try {
                         new CheckLogin().execute(loginModel);
 

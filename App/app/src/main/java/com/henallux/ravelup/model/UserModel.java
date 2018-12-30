@@ -71,8 +71,6 @@ public class UserModel {
     }
 
     public void setDateNaissance(Date dateNaissance) {
-        //Date minAge= new Date(2006,01,01);
-        //if(dateNaissance.compareTo(minAge)>0)
             this.DateNaissance = dateNaissance;
     }
 

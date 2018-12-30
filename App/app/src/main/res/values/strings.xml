@@ -49,5 +49,8 @@
     <string name="annee_SignUpActivity">Année</string>
     <string name="mois_SignUpActivity">Mois</string>
     <string name="jour_SignUpActivity">Jour</string>
-    <string name="date_de_naissance_SignUpActivity">Date de naissance :</string>
+    <string name="date_de_naissance_SignUpActivity">Date de naissance:</string>
+    <string name="help_for_password">help for password</string>
+    <string name="help_for_birthdate">help for birthdate</string>
+    <string name="title_activity_ravel_map">Map</string>
 </resources>

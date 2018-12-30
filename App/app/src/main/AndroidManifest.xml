@@ -31,11 +31,9 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-
         <meta-data
             android:name="com.google.android.gms.vision.DEPENDENCIES"
             android:value="barcode" />
@@ -44,11 +42,11 @@
         <activity android:name=".features.map.MapMenuActivity" />
         <activity android:name=".features.connection.LoginActivity" />
         <activity android:name=".features.menus.RedirectActivity">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity android:name=".features.menus.MainRedirectActivity" />
         <activity
@@ -56,9 +54,11 @@
             android:label="Read Barcode" />
         <activity
             android:name=".features.map.MapActivity"
-            android:label="@string/title_activity_map">
-        </activity>
-        <activity android:name=".features.ravel.DescriptionActivity"></activity>
+            android:label="@string/title_activity_map"></activity>
+        <activity android:name=".features.ravel.DescriptionActivity" />
+        <activity
+            android:name=".features.ravel.RavelMapActivity"
+            android:label="@string/title_activity_ravel_map"></activity>
     </application>
 
 </manifest>
