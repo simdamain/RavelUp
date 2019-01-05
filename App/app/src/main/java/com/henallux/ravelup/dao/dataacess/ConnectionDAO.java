@@ -1,14 +1,16 @@
 package com.henallux.ravelup.dao.dataacess;
 
-import com.henallux.ravelup.model.CityModel;
-import com.henallux.ravelup.model.LoginModel;
-import com.henallux.ravelup.model.TokenReceived;
+import com.henallux.ravelup.exeptions.LoginExecption;
+import com.henallux.ravelup.exeptions.SignUpException;
+import com.henallux.ravelup.models.CityModel;
+import com.henallux.ravelup.models.LoginModel;
+import com.henallux.ravelup.models.TokenReceivedModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import com.google.gson.*;
-import com.henallux.ravelup.model.UserModel;
+import com.henallux.ravelup.models.UserModel;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -18,6 +20,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -33,11 +37,9 @@ public class ConnectionDAO{
             .serializeNulls()
             .create();
 
-    public TokenReceived checkLogin(LoginModel user){
+    public TokenReceivedModel checkLogin(LoginModel user) throws LoginExecption,JSONException,IOException {
 
-        TokenReceived tokenReceivedCode = new TokenReceived();
-
-        try {
+        TokenReceivedModel tokenReceived = new TokenReceivedModel();
 
             URL url = new URL("http://ravelapidb.azurewebsites.net/api/Jwt");
             HttpURLConnection connection = (HttpURLConnection)url.openConnection();
@@ -57,42 +59,48 @@ public class ConnectionDAO{
             streamWriter.flush();
             streamWriter.close();
 
-            InputStream inputStream = new BufferedInputStream(connection.getInputStream());
-            java.util.Scanner scanner = new java.util.Scanner(inputStream).useDelimiter("\\A");
-            String token = scanner.hasNext() ? scanner.next() : "";
+            if (connection.getResponseCode() == HttpURLConnection.HTTP_BAD_REQUEST)
+                throw new LoginExecption("Informations incorrectes ou manquantes");
+
+            if(connection.getResponseCode() == HttpURLConnection.HTTP_NOT_FOUND)
+                throw new LoginExecption("l'utilisateur introuvable");
+
+            BufferedReader buffer =new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            StringBuilder builder = new StringBuilder();
+            String jsonString="",line;
+            while((line=buffer.readLine())!=null){
+                builder.append(line);
+            }
+            buffer.close();
+            jsonString=builder.toString();
+
+
+//            InputStream inputStream = new BufferedInputStream(connection.getInputStream());
+//            java.util.Scanner scanner = new java.util.Scanner(inputStream).useDelimiter("\\A");
+//            String token = scanner.hasNext() ? scanner.next() : "";
 
             outputStream.close();
             connection.disconnect();
 
-            JSONObject tokenReceived = new JSONObject(token);
-            tokenReceivedCode.setToken(tokenReceived.getString("acces_token"));
+            JSONObject tokenReceivedJSON = new JSONObject(jsonString);
+            tokenReceived.setToken(tokenReceivedJSON.getString("acces_token"));
 
-            if (!tokenReceivedCode.getToken().equals("")) {
-                tokenReceivedCode.setCode(connection.getResponseCode());
+            if (!tokenReceived.getToken().equals("")) {
+                tokenReceived.setCode(connection.getResponseCode());
                 DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.FRENCH);
                 Date currentDate = new Date();
-                Long durationToken = Long.parseLong(tokenReceived.getString("expires_in"));
+                Long durationToken = Long.parseLong(tokenReceivedJSON.getString("expires_in"));
                 Calendar cal = Calendar.getInstance();
                 cal.setTimeInMillis(currentDate.getTime() + durationToken);
                 Date expirationDate = cal.getTime();
                 dateFormat.format(expirationDate);
-                tokenReceivedCode.setExpirationDate(expirationDate);
+                tokenReceived.setExpirationDate(expirationDate);
             }
-        }
-        catch(IOException e){
-            // TODO: 17/12/2018  a modifier et refaire les exceptions
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return tokenReceivedCode;
+        return tokenReceived;
     }
 
-    public void signUp(UserModel user){
+    public void signUp(UserModel user) throws SignUpException,IOException  {
 
-        try {
-
-            //Todo change url
             URL url = new URL("http://ravelapidb.azurewebsites.net/api/User");
             HttpURLConnection connection = (HttpURLConnection)url.openConnection();
 
@@ -109,17 +117,14 @@ public class ConnectionDAO{
             streamWriter.write(gsonBuilder.toJson(user));
             streamWriter.flush();
             streamWriter.close();
+
+            if (connection.getResponseCode() == HttpURLConnection.HTTP_BAD_REQUEST)
+                throw new SignUpException("Informations incorrectes ou manquantes");
+
             BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String test = br.readLine();
             outputStream.close();
             connection.disconnect();
-
-        }
-        catch(IOException e){
-            // TODO: 17/12/2018  a modifier et refaire les exceptions
-            e.printStackTrace();
-        }
-
     }
 
     public ArrayList<CityModel> getAllCities()throws Exception{

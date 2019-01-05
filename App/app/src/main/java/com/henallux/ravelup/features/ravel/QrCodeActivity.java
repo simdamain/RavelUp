@@ -26,7 +26,7 @@ import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
 import com.google.gson.Gson;
 import com.henallux.ravelup.R;
-import com.henallux.ravelup.model.TokenReceived;
+import com.henallux.ravelup.models.TokenReceivedModel;
 /*import com.henallux.ravelup.features;
 import com.henallux.smartcity.DAO.PlantJSONDAO;
 import com.henallux.smartcity.R;*/
@@ -35,7 +35,7 @@ import java.io.IOException;
 
 
 public class QrCodeActivity extends AppCompatActivity {
-        private TokenReceived token;
+        private TokenReceivedModel token;
         private ConnectivityManager connectivityManager;
         private NetworkInfo activeNetwork;
         private boolean isConnected;
@@ -53,7 +53,7 @@ public class QrCodeActivity extends AppCompatActivity {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_qr_code);
             connectivityManager = (ConnectivityManager) QrCodeActivity.this.getSystemService(Context.CONNECTIVITY_SERVICE);
-            token = new TokenReceived();
+            token = new TokenReceivedModel();
             token.setToken(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("Token","no Token"));
 
 

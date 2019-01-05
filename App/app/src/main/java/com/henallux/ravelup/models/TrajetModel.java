@@ -1,4 +1,4 @@
-package com.henallux.ravelup.model;
+package com.henallux.ravelup.models;
 
 import java.util.ArrayList;
 
@@ -6,7 +6,7 @@ public class TrajetModel {
     private Long id;
     private double nbKm;
     private String description;
-    private Long TypeDeplacement; //switch
+    private Integer typeDeplacement; //switch  //1 cheval  2 velo  //3 pied
     private ArrayList<Long> points;
 
     public TrajetModel() {
@@ -17,7 +17,7 @@ public class TrajetModel {
         this.points = points;
     }
 
-    public TrajetModel(Long id, double nbKm, String description, Long typeDeplacement, ArrayList<Long> points) {
+    public TrajetModel(Long id, double nbKm, String description, Integer typeDeplacement, ArrayList<Long> points) {
         setId(id);
         setDescription(description);
         setNbKm(nbKm);
@@ -26,7 +26,21 @@ public class TrajetModel {
     }
 
     public String descriptionRecyclerView(){
-        return getDescription()+" nombre de KM : "+getNbKm();
+        String description = getDescription() + "\n Le parcours est de KM : " + getNbKm();
+        switch (getTypeDeplacement()) {
+            case 1:
+                description+="\n Type de déplacement : à cheval";
+                break;
+            case 2:
+                description+="\n Type de déplacement : à vélo";
+                break;
+            case 3:
+                description+="\n Type de déplacement : à pied";
+                break;
+            default:
+                description+="";
+        }
+        return description;
     }
 
     public Long getId() {
@@ -53,12 +67,12 @@ public class TrajetModel {
         this.description = description;
     }
 
-    public Long getTypeDeplacement() {
-        return TypeDeplacement;
+    public Integer getTypeDeplacement() {
+        return typeDeplacement;
     }
 
-    public void setTypeDeplacement(Long typeDeplacement) {
-        TypeDeplacement = typeDeplacement;
+    public void setTypeDeplacement(Integer typeDeplacement) {
+        this.typeDeplacement = typeDeplacement;
     }
 
     public ArrayList<Long> getPoints() {

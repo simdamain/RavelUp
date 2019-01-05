@@ -1,6 +1,5 @@
 package com.henallux.ravelup.features.ravel;
 
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +8,7 @@ import android.widget.TextView;
 
 
 import com.henallux.ravelup.R;
-import com.henallux.ravelup.model.TrajetModel;
+import com.henallux.ravelup.models.TrajetModel;
 
 import java.util.ArrayList;
 

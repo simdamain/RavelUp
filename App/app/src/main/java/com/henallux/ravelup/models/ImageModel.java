@@ -1,4 +1,4 @@
-package com.henallux.ravelup.model;
+package com.henallux.ravelup.models;
 
 public class ImageModel {
     private long id;

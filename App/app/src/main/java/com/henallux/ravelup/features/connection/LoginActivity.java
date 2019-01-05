@@ -2,7 +2,8 @@ package com.henallux.ravelup.features.connection;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
@@ -17,17 +18,27 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.henallux.ravelup.R;
 import com.henallux.ravelup.dao.dataacess.ConnectionDAO;
+import com.henallux.ravelup.exeptions.LoginExecption;
 import com.henallux.ravelup.features.menus.MainRedirectActivity;
-import com.henallux.ravelup.model.LoginModel;
-import com.henallux.ravelup.model.TokenReceived;
+import com.henallux.ravelup.models.LoginModel;
+import com.henallux.ravelup.models.TokenReceivedModel;
+
+import org.json.JSONException;
+
+import java.io.IOException;
+import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity {
-    private TokenReceived mTokenReceived;
+    private TokenReceivedModel mTokenReceived;
+    private NetworkInfo activeNetwork;
+    private boolean isConnected;
+    private ConnectivityManager connectivityManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
 
         //region logo
         ImageView logo= findViewById(R.id.logo);
@@ -52,6 +63,7 @@ public class LoginActivity extends AppCompatActivity {
                     login.setError("Ce champs ne peut être vide");
                     hasError=true;
                 }
+
                 TextInputLayout password = findViewById(R.id.motDePasse_LoginActivity);
                 String passwordValue = password.getEditText().getText().toString();
                 password.setError(null);
@@ -62,17 +74,18 @@ public class LoginActivity extends AppCompatActivity {
                     hasError=true;
                 }
 
-
-                if(!hasError) {
-                    //todo tester si coupure d internet et corriger crash lors de mauvais login/motde passe
-                    try {
-                        new CheckLogin().execute(loginModel);
-
-                    } catch (Exception e) {
-                        Toast.makeText(LoginActivity.this, "Identifiants incorrects", Toast.LENGTH_SHORT).show();
-                    }
-                }else{
-                    hasError = false;
+                activeNetwork = connectivityManager.getActiveNetworkInfo();
+                isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+                if(!hasError && isConnected)
+                    new CheckLogin().execute(loginModel);
+                else{
+                    final Snackbar snackbar = Snackbar.make(findViewById(R.id.connectionButton_login_activity),"La connection internet s'est interrompue", Snackbar.LENGTH_INDEFINITE);
+                    snackbar.setAction("OK", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) { snackbar.dismiss();
+                            }
+                        });
+                    snackbar.show();
                 }
 
 
@@ -81,24 +94,32 @@ public class LoginActivity extends AppCompatActivity {
         //endregion
     }
 
-    private class CheckLogin extends AsyncTask<LoginModel,Void,TokenReceived>{
+    private class CheckLogin extends AsyncTask<LoginModel,Void,TokenReceivedModel>{
         private ConnectionDAO connectionDAO= new ConnectionDAO();
 
         @Override
-        protected TokenReceived doInBackground(LoginModel... params){
+        protected TokenReceivedModel doInBackground(LoginModel... params){
 
-            TokenReceived tokenReceived = new TokenReceived();
+            TokenReceivedModel tokenReceived = new TokenReceivedModel();
 
             try{
                 tokenReceived = connectionDAO.checkLogin(params[0]);
             }
-            catch(Exception e){
-                /*Toast*/
+            catch (LoginExecption e){
+                // TODO: 17/12/2018  a modifier et refaire les exceptions  passe dans les toasts mais ne les execute pas
+                Toast.makeText(getApplicationContext(), e.getMessage(),
+                        Toast.LENGTH_LONG).show();
+            } catch (IOException e) {
+                Toast.makeText(getApplicationContext(), e.getMessage(),
+                        Toast.LENGTH_LONG).show();
+            } catch (JSONException e) {
+                Toast.makeText(getApplicationContext(), e.getMessage(),
+                        Toast.LENGTH_LONG).show();
             }
             if( tokenReceived.getToken() != null)
                 return tokenReceived;
             else{
-                final Snackbar snackbar = Snackbar.make(findViewById(R.id.boutonConnexion),"Le login et/ou le mot de passe est incorrect", Snackbar.LENGTH_INDEFINITE);
+                final Snackbar snackbar = Snackbar.make(findViewById(R.id.connectionButton_login_activity),"Le login et/ou le mot de passe est incorrect", Snackbar.LENGTH_INDEFINITE);
                 snackbar.setAction("OK", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -106,13 +127,13 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
                 snackbar.show();
-                return new TokenReceived();
+                return new TokenReceivedModel();
             }
 
         }
 
         @Override
-        protected void onPostExecute(TokenReceived tokenReceived) {
+        protected void onPostExecute(TokenReceivedModel tokenReceived) {
             mTokenReceived = tokenReceived;
             if (mTokenReceived.getErrorException().equals("") && mTokenReceived.getCode() == 200) {
                 PreferenceManager.getDefaultSharedPreferences(getApplicationContext())

@@ -14,6 +14,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 
@@ -32,16 +33,17 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import com.henallux.ravelup.R;
 import com.henallux.ravelup.dao.dataacess.MapDAO;
-import com.henallux.ravelup.model.PinModel;
-import com.henallux.ravelup.model.PointOfInterestModel;
-import com.henallux.ravelup.model.TokenReceived;
+import com.henallux.ravelup.exeptions.PinException;
+import com.henallux.ravelup.exeptions.TokenException;
+import com.henallux.ravelup.models.PinModel;
+import com.henallux.ravelup.models.PointOfInterestModel;
+import com.henallux.ravelup.models.TokenReceivedModel;
 
-import org.json.JSONArray;
+import org.json.JSONException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 
@@ -49,8 +51,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
 
     private GoogleMap mMap;
     private ArrayList<PointOfInterestModel> allPins;
-    private TokenReceived token;
     private PinModel pin;
+    private LocationRequest mLocationRequest;
     private NetworkInfo activeNetwork;
     private boolean isConnected;
     private ConnectivityManager connectivityManager;
@@ -59,7 +61,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
     private static final float DEFAULT_ZOOM = 16f;
 
-
+//todo faire pour que quand on appuye sur une pin elle affiche le tout ou quoi  + images
 
 
     @Override
@@ -70,21 +72,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         pin= new PinModel();
         connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        activeNetwork = connectivityManager.getActiveNetworkInfo();
-        isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-        if(isConnected) {
+
             getLocationPermission();
-        }
-        else{
-            final Snackbar snackbar = Snackbar.make(findViewById(R.id.boutonToCarte),"La connexion internet s'est interrompu", Snackbar.LENGTH_INDEFINITE);
-            snackbar.setAction("OK", new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    snackbar.dismiss();
-                }
-            });
-            snackbar.show();
-        }
+
     }
 
     @Override
@@ -123,7 +113,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
 
     }
 
-
     private void getLocationPermission(){
         String[] permissions= {Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION};
         if (ContextCompat.checkSelfPermission(this.getApplicationContext(),Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
@@ -148,6 +137,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                     @Override
                     public void onComplete(@NonNull Task task) {
                         if(task.isSuccessful()){
+                            //todo quand geolocalisation desactiver plante => l'imposé
                             Location currentLocation = (Location) task.getResult();
                             LatLng location = new LatLng(currentLocation.getLatitude(),currentLocation.getLongitude());
                             mMap.addMarker(new MarkerOptions().position(location)
@@ -169,7 +159,14 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 });
             }
         }catch(SecurityException e){
-            Log.e("Tag","getDeviceLocation : SecurityException: "+e.getMessage());
+            final Snackbar snackbar = Snackbar.make(findViewById(R.id.map),e.getMessage(), Snackbar.LENGTH_INDEFINITE);
+            snackbar.setAction("OK", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    snackbar.dismiss();
+                }
+            });
+            snackbar.show();
         }
     }
 
@@ -181,7 +178,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
 
     class LoadPins extends AsyncTask<PinModel,Void,ArrayList<PointOfInterestModel>> {
         private MapDAO mapDAO= new MapDAO();
-        TokenReceived token= new TokenReceived();
+        TokenReceivedModel token= new TokenReceivedModel();
 
 
 
@@ -192,8 +189,42 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 token.setToken(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("token","no Token"));
 
                 allPins =mapDAO.getAllPins(token,params[0]);
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (TokenException e) {
+                final Snackbar snackbar = Snackbar.make(findViewById(R.id.map),e.getMessage(), Snackbar.LENGTH_INDEFINITE);
+                snackbar.setAction("OK", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        snackbar.dismiss();
+                    }
+                });
+                snackbar.show();
+            } catch (PinException e) {
+                final Snackbar snackbar = Snackbar.make(findViewById(R.id.map),e.getMessage(), Snackbar.LENGTH_INDEFINITE);
+                snackbar.setAction("OK", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        snackbar.dismiss();
+                    }
+                });
+                snackbar.show();
+            } catch (IOException e) {
+                final Snackbar snackbar = Snackbar.make(findViewById(R.id.map),e.getMessage(), Snackbar.LENGTH_INDEFINITE);
+                snackbar.setAction("OK", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        snackbar.dismiss();
+                    }
+                });
+                snackbar.show();
+            }catch (JSONException e) {
+                final Snackbar snackbar = Snackbar.make(findViewById(R.id.map),e.getMessage(), Snackbar.LENGTH_INDEFINITE);
+                snackbar.setAction("OK", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        snackbar.dismiss();
+                    }
+                });
+                snackbar.show();
             }
             return allPins;
         }

@@ -1,12 +1,11 @@
 package com.henallux.ravelup.dao.dataacess;
 
-import android.preference.PreferenceManager;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.henallux.ravelup.model.PointOfInterestModel;
-import com.henallux.ravelup.model.TokenReceived;
-import com.henallux.ravelup.model.TrajetModel;
+import com.henallux.ravelup.exeptions.PinException;
+import com.henallux.ravelup.models.PointOfInterestModel;
+import com.henallux.ravelup.models.TokenReceivedModel;
+import com.henallux.ravelup.models.TrajetModel;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -26,7 +25,7 @@ public class RavelDAO {
             .serializeNulls()
             .create();
 
-    public PointOfInterestModel getPointInterest(TokenReceived token, Long idPoint)throws Exception{
+    public PointOfInterestModel getPointInterest(TokenReceivedModel token, Long idPoint)throws Exception {
         //Gson gsonBuilder = new GsonBuilder().serializeNulls().create();
 
 
@@ -65,7 +64,7 @@ public class RavelDAO {
         return point;
     }
 
-    public ArrayList<TrajetModel> getTrajets(TokenReceived token, ArrayList<Long>idTrajets)throws Exception{
+    public ArrayList<TrajetModel> getTrajets(TokenReceivedModel token, ArrayList<Long>idTrajets)throws Exception{
         URL url = new URL("http://ravelapidb.azurewebsites.net/api/Trajets/TrajetList");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
@@ -110,13 +109,13 @@ public class RavelDAO {
             trajet.setId(jsonTrajet.getLong("id"));
             trajet.setDescription(jsonTrajet.getString("description"));
             trajet.setNbKm(jsonTrajet.getDouble("nbKm"));
-            trajet.setTypeDeplacement(jsonTrajet.getLong("typeDeplacement"));
+            trajet.setTypeDeplacement(jsonTrajet.getInt("typeDeplacement"));
             trajets.add(trajet);
         }
         return trajets;
     }
 
-    public ArrayList<PointOfInterestModel> getPointsInterests(TokenReceived token, ArrayList<Long>idPoints)throws Exception{
+    public ArrayList<PointOfInterestModel> getPointsInterests(TokenReceivedModel token, ArrayList<Long>idPoints)throws Exception{
         URL url = new URL("http://ravelapidb.azurewebsites.net/api/PointInteret/pointInteretList");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 

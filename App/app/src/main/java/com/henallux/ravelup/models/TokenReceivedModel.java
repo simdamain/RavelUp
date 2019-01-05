@@ -1,19 +1,19 @@
-package com.henallux.ravelup.model;
+package com.henallux.ravelup.models;
 
 import java.util.Date;
 
-public class TokenReceived {
+public class TokenReceivedModel {
 
     private String token;
     private int code;
     private Date expirationDate;
     private String errorException;
 
-    public TokenReceived() {
+    public TokenReceivedModel() {
         this.errorException = "";
     }
 
-    public TokenReceived(String token, int code, Date expirationDate, String errorException) {
+    public TokenReceivedModel(String token, int code, Date expirationDate, String errorException) {
         setToken(token);
         setCode(code);
         setExpirationDate(expirationDate);

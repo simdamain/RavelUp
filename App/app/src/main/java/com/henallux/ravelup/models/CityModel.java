@@ -1,10 +1,10 @@
-package com.henallux.ravelup.model;
+package com.henallux.ravelup.models;
 
 public class CityModel {
-    private int Id;
-    private String Libelle;
-    private int CodePostal;
-    private CountryModel Pays;
+    private int id;
+    private String libelle;
+    private int codePostal;
+    private CountryModel pays;
 
     public CityModel(int id, String libelle, int codePostal, CountryModel pays) {
         setId(id);
@@ -23,35 +23,35 @@ public class CityModel {
     }
 
     public int getId() {
-        return Id;
+        return id;
     }
 
     public void setId(int id) {
-        this.Id = id;
+        this.id = id;
     }
 
     public String getLibelle() {
-        return Libelle;
+        return libelle;
     }
 
     public void setLibelle(String libelle) {
-        this.Libelle = libelle;
+        this.libelle = libelle;
     }
 
     public int getCodePostal() {
-        return CodePostal;
+        return codePostal;
     }
 
     public void setCodePostal(int codePostal) {
-        this.CodePostal = codePostal;
+        this.codePostal = codePostal;
     }
 
     public CountryModel getPays() {
-        return Pays;
+        return pays;
     }
 
     public void setPays(CountryModel pays) {
-        this.Pays = pays;
+        this.pays = pays;
     }
 
     public String toSpinner(){return getLibelle()+" "+getCodePostal();}

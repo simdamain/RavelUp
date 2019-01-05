@@ -1,4 +1,4 @@
-package com.henallux.ravelup.model;
+package com.henallux.ravelup.models;
 
 import java.util.ArrayList;
 

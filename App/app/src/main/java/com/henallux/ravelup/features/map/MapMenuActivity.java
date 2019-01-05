@@ -11,21 +11,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.henallux.ravelup.R;
 import com.henallux.ravelup.dao.dataacess.MapDAO;
-import com.henallux.ravelup.features.ravel.QrCodeActivity;
-import com.henallux.ravelup.model.CategoryModel;
-import com.henallux.ravelup.model.TokenReceived;
+import com.henallux.ravelup.models.CategoryModel;
+import com.henallux.ravelup.models.TokenReceivedModel;
 
 import java.util.ArrayList;
 
@@ -36,7 +32,7 @@ public class MapMenuActivity extends AppCompatActivity {
     private CategorieAdapter adapter;
     private ArrayList<CategoryModel> allCategories;
     private ArrayList<Long> idCategories;
-    private TokenReceived token;
+    private TokenReceivedModel token;
     private NetworkInfo activeNetwork;
     private boolean isConnected;
     private ConnectivityManager connectivityManager;
@@ -49,7 +45,7 @@ public class MapMenuActivity extends AppCompatActivity {
         allCategories= new ArrayList<>();
         connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        token = new TokenReceived();
+        token = new TokenReceivedModel();
         mRecyclerView = findViewById(R.id.recyclerViewCat);
         layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
@@ -73,7 +69,7 @@ public class MapMenuActivity extends AppCompatActivity {
             });
         snackbar.show();
     }
-    //endregion
+    //endregionk
 
     //region Slider
         // SeekBar
@@ -160,11 +156,11 @@ public class MapMenuActivity extends AppCompatActivity {
         //endregion
     }
 
-    class LoadCategories extends AsyncTask<TokenReceived,Void,ArrayList<CategoryModel>> {
+    class LoadCategories extends AsyncTask<TokenReceivedModel,Void,ArrayList<CategoryModel>> {
         private MapDAO mapDAO= new MapDAO();
 
         @Override
-        protected ArrayList<CategoryModel> doInBackground(TokenReceived ...params) {
+        protected ArrayList<CategoryModel> doInBackground(TokenReceivedModel...params) {
             idCategories = new ArrayList<>();
             try {
                 allCategories =mapDAO.getAllCategories(params[0]);

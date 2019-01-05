@@ -1,8 +1,8 @@
-package com.henallux.ravelup.model;
+package com.henallux.ravelup.models;
 
 public class LoginModel {
-    private String UserName;
-    private String Password;
+    private String userName;
+    private String password;
 
     public LoginModel(String userName, String password) {
         setUserName(userName);
@@ -13,24 +13,24 @@ public class LoginModel {
     }
 
     public String getUserName() {
-        return UserName;
+        return userName;
     }
 
     public void setUserName(String userName) {
         if(userName == null){
-            this.UserName ="";
+            this.userName ="";
         }else
-        this.UserName = userName;
+        this.userName = userName;
     }
 
     public String getPassword() {
-        return Password;
+        return password;
     }
 
     public void setPassword(String password) {
         if(password == null){
-            this.Password ="";
+            this.password ="";
         }else
-            this.Password = password;
+            this.password = password;
     }
 }

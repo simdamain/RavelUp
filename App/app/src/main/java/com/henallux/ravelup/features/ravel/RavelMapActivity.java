@@ -2,12 +2,13 @@ package com.henallux.ravelup.features.ravel;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -29,15 +30,16 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PointOfInterest;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.henallux.ravelup.R;
 import com.henallux.ravelup.dao.dataacess.RavelDAO;
-import com.henallux.ravelup.model.PointOfInterestModel;
-import com.henallux.ravelup.model.TokenReceived;
+import com.henallux.ravelup.models.PointOfInterestModel;
+import com.henallux.ravelup.models.TokenReceivedModel;
 
 import java.util.ArrayList;
 
@@ -82,6 +84,17 @@ public class RavelMapActivity extends FragmentActivity implements OnMapReadyCall
 //                .findFragmentById(R.id.mapRavel);
 //        mapFragment.getMapAsync(this);
     }
+
+//    private String getUrl(LatLng start,LatLng end, String directionMode){
+//        String strStart = "origin="+start.latitude+","+start.longitude;
+//        String strEnd = "destination="+end.latitude+","+end.longitude;
+//        String mode= "mode="+ directionMode;
+//        String parameters = strStart+"&"+strEnd+"&"+mode;
+//        String output= "json";
+//        String url="https://maps.googleapis.com/maps/api/directions/"+output+"?"+parameters+"&key="+getString(R.string.google_maps_key);
+//        return url;
+//    }
+
 
 
     @Override
@@ -164,11 +177,9 @@ public class RavelMapActivity extends FragmentActivity implements OnMapReadyCall
         mapFragment.getMapAsync(this);
     }
 
-    
-
     class LoadPins extends AsyncTask<ArrayList<Long>,Void,ArrayList<PointOfInterestModel>> {
         private RavelDAO ravelDAO= new RavelDAO();
-        TokenReceived token= new TokenReceived();
+        TokenReceivedModel token= new TokenReceivedModel();
 
         @Override
         protected ArrayList<PointOfInterestModel> doInBackground(ArrayList<Long> ...params) {
@@ -183,19 +194,29 @@ public class RavelMapActivity extends FragmentActivity implements OnMapReadyCall
         }
 
         protected void onPostExecute(ArrayList<PointOfInterestModel> result) {
+
+
+            PolylineOptions options =new PolylineOptions().width(5).color(Color.BLUE).geodesic(true);
+            options.add(myLocation);
+            LatLng lastPin = myLocation;
+            String url= "http://maps.google.com/maps?f=d&hl=en&saddr="+myLocation.latitude+","+myLocation.longitude;
             for (PointOfInterestModel pin : result) {
-                        mMap.addMarker(new MarkerOptions().position(new LatLng(pin.getLatitude(), pin.getLongitude()))
-                                .title(pin.getNom())
-                                .snippet(pin.getDescription()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+//                mMap.addMarker(new MarkerOptions().position(new LatLng(pin.getLatitude(), pin.getLongitude()))
+//                        .title(pin.getNom())
+//                        .snippet(pin.getDescription()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+//                options.add(new LatLng(pin.getLatitude(),pin.getLongitude()));
+                url+="&daddr="+pin.getLatitude()+","+pin.getLongitude();
+                }
+            //            Polyline polyline1= mMap.addPolyline(options);
+            url+="&ie=UTF8&0&om=0&output=kml";
+            Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                    Uri.parse(url));
+            startActivity(intent);
             }
-            Paint mPaint = new Paint();
-            mPaint.setDither(true);
-            mPaint.setColor(Color.RED);
-            mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
-            mPaint.setStrokeJoin(Paint.Join.ROUND);
-            mPaint.setStrokeCap(Paint.Cap.ROUND);
-            mPaint.setStrokeWidth(2);
-        }
+
+
+
+
 
         @Override
         protected void onCancelled() {

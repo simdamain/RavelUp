@@ -8,7 +8,7 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 
 import com.henallux.ravelup.R;
-import com.henallux.ravelup.model.CategoryModel;
+import com.henallux.ravelup.models.CategoryModel;
 
 import java.util.ArrayList;
 

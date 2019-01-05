@@ -2,17 +2,21 @@ package com.henallux.ravelup.dao.dataacess;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.henallux.ravelup.model.CategoryModel;
-import com.henallux.ravelup.model.PinModel;
-import com.henallux.ravelup.model.PointOfInterestModel;
-import com.henallux.ravelup.model.TokenReceived;
+
+import com.henallux.ravelup.exeptions.CategoryException;
+import com.henallux.ravelup.exeptions.PinException;
+import com.henallux.ravelup.exeptions.TokenException;
+import com.henallux.ravelup.models.CategoryModel;
+import com.henallux.ravelup.models.PinModel;
+import com.henallux.ravelup.models.PointOfInterestModel;
+import com.henallux.ravelup.models.TokenReceivedModel;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.InputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -24,13 +28,20 @@ public class MapDAO {
     private Gson gsonBuilder = new GsonBuilder()
         .serializeNulls()
         .create();
-    public ArrayList<CategoryModel> getAllCategories(TokenReceived token)throws Exception{
+    public ArrayList<CategoryModel> getAllCategories(TokenReceivedModel token) throws TokenException, CategoryException, IOException, JSONException {
 
         URL url = new URL("http://ravelapidb.azurewebsites.net/api/Categorie");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Content-type","application/json");
-        connection.setRequestProperty("Authorization","Bearer " +token.getToken());
+                connection.setRequestProperty("Authorization","Bearer " +token.getToken());
+
+        if(connection.getResponseCode()==HttpURLConnection.HTTP_UNAUTHORIZED)
+            throw new TokenException("la session a expirée");
+
+        if(connection.getResponseCode() == HttpURLConnection.HTTP_NOT_FOUND)
+            throw new CategoryException("Les catégories n'ont pas été trouvées");
+
         BufferedReader buffer = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         StringBuilder builder = new StringBuilder();
         String stringJSON = "", line;
@@ -42,7 +53,7 @@ public class MapDAO {
         return jsonToCategories(stringJSON);
     }
 
-    private ArrayList<CategoryModel>jsonToCategories(String stringJSON) throws Exception {
+    private ArrayList<CategoryModel>jsonToCategories(String stringJSON) throws JSONException {
         ArrayList<CategoryModel> categories= new ArrayList<>();
         CategoryModel category;
         JSONArray jsonArray=new JSONArray(stringJSON);
@@ -56,7 +67,7 @@ public class MapDAO {
         return categories;
     }
 
-    public ArrayList<PointOfInterestModel> getAllPins(TokenReceived token, PinModel pin)throws Exception{
+    public ArrayList<PointOfInterestModel> getAllPins(TokenReceivedModel token, PinModel pin) throws TokenException,PinException,IOException,JSONException {
         URL url = new URL("http://ravelapidb.azurewebsites.net/api/PointInteret/ByCategorie");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
@@ -75,6 +86,14 @@ public class MapDAO {
         streamWriter.flush();
         streamWriter.close();
 
+        if(connection.getResponseCode()==HttpURLConnection.HTTP_UNAUTHORIZED)
+            throw new TokenException("la session a expirée");
+
+        if(connection.getResponseCode() == HttpURLConnection.HTTP_NOT_FOUND)
+            throw new PinException("Les points d'intérêts n'ont pas été trouvés");
+
+
+
         BufferedReader buffer =new BufferedReader(new InputStreamReader(connection.getInputStream()));
         StringBuilder builder = new StringBuilder();
         String jsonString="",line;
@@ -90,7 +109,7 @@ public class MapDAO {
         return jsonToPointsInterets(jsonString);
     }
 
-    private ArrayList<PointOfInterestModel>jsonToPointsInterets(String stringJSON) throws Exception {
+    private ArrayList<PointOfInterestModel>jsonToPointsInterets(String stringJSON) throws JSONException {
         ArrayList<PointOfInterestModel> pointOfInterest= new ArrayList<>();
         PointOfInterestModel pin;
         JSONArray jsonArray=new JSONArray(stringJSON);

@@ -16,20 +16,19 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.henallux.ravelup.R;
 import com.henallux.ravelup.dao.dataacess.RavelDAO;
-import com.henallux.ravelup.model.JsonToTrajetModel;
-import com.henallux.ravelup.model.PointInteretTrajetModel;
-import com.henallux.ravelup.model.PointOfInterestModel;
-import com.henallux.ravelup.model.TokenReceived;
-import com.henallux.ravelup.model.TrajetModel;
+import com.henallux.ravelup.models.JsonToTrajetModel;
+import com.henallux.ravelup.models.PointInteretTrajetModel;
+import com.henallux.ravelup.models.PointOfInterestModel;
+import com.henallux.ravelup.models.TokenReceivedModel;
+import com.henallux.ravelup.models.TrajetModel;
 
 import java.util.ArrayList;
 
 public class DescriptionActivity extends AppCompatActivity {
-    private TokenReceived token;
+    private TokenReceivedModel token;
     private PointOfInterestModel point;
     private ArrayList<Long> pointsTrajet;
     private ArrayList<TrajetModel> trajets;
@@ -60,7 +59,7 @@ public class DescriptionActivity extends AppCompatActivity {
         description =findViewById(R.id.description_area_description_activity);
 
         //region recupération du token
-        token = new TokenReceived();
+        token = new TokenReceivedModel();
         token.setToken(PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
                 .getString("token","no Token"));
         //endregion
