@@ -15,18 +15,16 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.henallux.ravelup.R;
 import com.henallux.ravelup.dao.dataacess.ConnectionDAO;
+import com.henallux.ravelup.exeptions.CityException;
 import com.henallux.ravelup.exeptions.SignUpException;
-import com.henallux.ravelup.exeptions.TokenException;
 import com.henallux.ravelup.models.CityModel;
 import com.henallux.ravelup.models.UserModel;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.regex.Matcher;
@@ -44,7 +42,7 @@ public class SignUpActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_inscription);
+        setContentView(R.layout.activity_signup);
         connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
         Gson gsonBuilder = new GsonBuilder().serializeNulls().create();
 
@@ -224,7 +222,6 @@ public class SignUpActivity extends AppCompatActivity {
                         user.setIdVille(city.getId());
                     }
                 }
-                //todo try catch ont surment fait planté l'inscription gaffe
                 if(!hasError){
                         new signUp().execute(user);
                 }else
@@ -240,15 +237,17 @@ public class SignUpActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(UserModel... params) {
-
             try {
                 connectionDAO.signUp(params[0]);
             } catch (SignUpException e) {
-                Toast.makeText(getApplicationContext(), e.getMessage(),
-                        Toast.LENGTH_LONG).show();
-            } catch (IOException e) {
-                Toast.makeText(getApplicationContext(), e.getMessage(),
-                        Toast.LENGTH_LONG).show();
+                final Snackbar snackbar = Snackbar.make(findViewById(R.id.buttonSignUp),e.getMessage(), Snackbar.LENGTH_INDEFINITE);
+                snackbar.setAction("OK", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        snackbar.dismiss();
+                    }
+                });
+                snackbar.show();
             }
             return null;
         }
@@ -267,8 +266,15 @@ public class SignUpActivity extends AppCompatActivity {
             libelleCities= new ArrayList<>();
             try {
                 allCities = connectionDAO.getAllCities();
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (CityException e) {
+                final Snackbar snackbar = Snackbar.make(findViewById(R.id.buttonSignUp),e.getMessage(), Snackbar.LENGTH_INDEFINITE);
+                snackbar.setAction("OK", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        snackbar.dismiss();
+                    }
+                });
+                snackbar.show();
             }
             for (CityModel city : allCities){
                 libelleCities.add(city.getLibelle()+" - "+city.getCodePostal());

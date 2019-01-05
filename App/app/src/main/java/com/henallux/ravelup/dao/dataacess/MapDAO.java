@@ -28,29 +28,28 @@ public class MapDAO {
     private Gson gsonBuilder = new GsonBuilder()
         .serializeNulls()
         .create();
-    public ArrayList<CategoryModel> getAllCategories(TokenReceivedModel token) throws TokenException, CategoryException, IOException, JSONException {
+    public ArrayList<CategoryModel> getAllCategories(TokenReceivedModel token) throws TokenException, CategoryException{
+        try {
+            URL url = new URL("http://ravelapidb.azurewebsites.net/api/Categorie");
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Content-type", "application/json");
+            connection.setRequestProperty("Authorization", "Bearer " + token.getToken());
 
-        URL url = new URL("http://ravelapidb.azurewebsites.net/api/Categorie");
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
-        connection.setRequestProperty("Content-type","application/json");
-                connection.setRequestProperty("Authorization","Bearer " +token.getToken());
-
-        if(connection.getResponseCode()==HttpURLConnection.HTTP_UNAUTHORIZED)
+            BufferedReader buffer = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            StringBuilder builder = new StringBuilder();
+            String stringJSON = "", line;
+            while ((line = buffer.readLine()) != null) {
+                builder.append(line);
+            }
+            buffer.close();
+            stringJSON = builder.toString();
+            return jsonToCategories(stringJSON);
+        } catch (IOException e) {
             throw new TokenException("la session a expirée");
-
-        if(connection.getResponseCode() == HttpURLConnection.HTTP_NOT_FOUND)
+        } catch (JSONException e) {
             throw new CategoryException("Les catégories n'ont pas été trouvées");
-
-        BufferedReader buffer = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        StringBuilder builder = new StringBuilder();
-        String stringJSON = "", line;
-        while ((line = buffer.readLine()) != null) {
-            builder.append(line);
         }
-        buffer.close();
-        stringJSON = builder.toString();
-        return jsonToCategories(stringJSON);
     }
 
     private ArrayList<CategoryModel>jsonToCategories(String stringJSON) throws JSONException {
@@ -67,46 +66,37 @@ public class MapDAO {
         return categories;
     }
 
-    public ArrayList<PointOfInterestModel> getAllPins(TokenReceivedModel token, PinModel pin) throws TokenException,PinException,IOException,JSONException {
-        URL url = new URL("http://ravelapidb.azurewebsites.net/api/PointInteret/ByCategorie");
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-        connection.setRequestMethod("POST");
-        connection.setRequestProperty("Content-type","application/json");
-        connection.setRequestProperty("Authorization","Bearer " +token.getToken());
-
-        connection.setDoOutput(true);
-        connection.setDoInput(true);
-
-        OutputStream outputStream = connection.getOutputStream();
-        OutputStreamWriter streamWriter = new OutputStreamWriter(outputStream);
-
-        connection.connect();
-        streamWriter.write(gsonBuilder.toJson(pin));
-        streamWriter.flush();
-        streamWriter.close();
-
-        if(connection.getResponseCode()==HttpURLConnection.HTTP_UNAUTHORIZED)
-            throw new TokenException("la session a expirée");
-
-        if(connection.getResponseCode() == HttpURLConnection.HTTP_NOT_FOUND)
+    public ArrayList<PointOfInterestModel> getAllPins(TokenReceivedModel token, PinModel pin) throws TokenException,PinException{
+        try {
+            URL url = new URL("http://ravelapidb.azurewebsites.net/api/PointInteret/ByCategorie");
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-type", "application/json");
+            connection.setRequestProperty("Authorization", "Bearer " + token.getToken());
+            connection.setDoOutput(true);
+            connection.setDoInput(true);
+            OutputStream outputStream = connection.getOutputStream();
+            OutputStreamWriter streamWriter = new OutputStreamWriter(outputStream);
+            connection.connect();
+            streamWriter.write(gsonBuilder.toJson(pin));
+            streamWriter.flush();
+            streamWriter.close();
+            BufferedReader buffer = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            StringBuilder builder = new StringBuilder();
+            String jsonString = "", line;
+            while ((line = buffer.readLine()) != null) {
+                builder.append(line);
+            }
+            buffer.close();
+            jsonString = builder.toString();
+            outputStream.close();
+            connection.disconnect();
+            return jsonToPointsInterets(jsonString);
+        }catch (JSONException e){
             throw new PinException("Les points d'intérêts n'ont pas été trouvés");
-
-
-
-        BufferedReader buffer =new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        StringBuilder builder = new StringBuilder();
-        String jsonString="",line;
-        while((line=buffer.readLine())!=null){
-            builder.append(line);
+        }catch(IOException e){
+            throw new TokenException("la session a expirée");
         }
-        buffer.close();
-        jsonString=builder.toString();
-
-
-        outputStream.close();
-        connection.disconnect();
-        return jsonToPointsInterets(jsonString);
     }
 
     private ArrayList<PointOfInterestModel>jsonToPointsInterets(String stringJSON) throws JSONException {

@@ -2,6 +2,7 @@ package com.henallux.ravelup.features.map;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.ConnectivityManager;
@@ -20,7 +21,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -37,6 +37,7 @@ import com.henallux.ravelup.R;
 import com.henallux.ravelup.dao.dataacess.MapDAO;
 import com.henallux.ravelup.exeptions.PinException;
 import com.henallux.ravelup.exeptions.TokenException;
+import com.henallux.ravelup.features.connection.LoginActivity;
 import com.henallux.ravelup.models.PinModel;
 import com.henallux.ravelup.models.PointOfInterestModel;
 import com.henallux.ravelup.models.TokenReceivedModel;
@@ -100,7 +101,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             new LoadPins().execute(pin);
         }
         else{
-            final Snackbar snackbar = Snackbar.make(findViewById(R.id.boutonToCarte),"La connection internet s'est interrompu", Snackbar.LENGTH_INDEFINITE);
+            final Snackbar snackbar = Snackbar.make(findViewById(R.id.buttonToMap_menuMap_activity),"La connection internet s'est interrompu", Snackbar.LENGTH_INDEFINITE);
             snackbar.setAction("OK", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -178,10 +179,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
 
     class LoadPins extends AsyncTask<PinModel,Void,ArrayList<PointOfInterestModel>> {
         private MapDAO mapDAO= new MapDAO();
+        Boolean isTokenAlive= true;
         TokenReceivedModel token= new TokenReceivedModel();
-
-
-
         @Override
         protected ArrayList<PointOfInterestModel> doInBackground(PinModel ...params) {
             allPins= new ArrayList<>();
@@ -198,25 +197,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                     }
                 });
                 snackbar.show();
+                isTokenAlive= false;
             } catch (PinException e) {
-                final Snackbar snackbar = Snackbar.make(findViewById(R.id.map),e.getMessage(), Snackbar.LENGTH_INDEFINITE);
-                snackbar.setAction("OK", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        snackbar.dismiss();
-                    }
-                });
-                snackbar.show();
-            } catch (IOException e) {
-                final Snackbar snackbar = Snackbar.make(findViewById(R.id.map),e.getMessage(), Snackbar.LENGTH_INDEFINITE);
-                snackbar.setAction("OK", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        snackbar.dismiss();
-                    }
-                });
-                snackbar.show();
-            }catch (JSONException e) {
                 final Snackbar snackbar = Snackbar.make(findViewById(R.id.map),e.getMessage(), Snackbar.LENGTH_INDEFINITE);
                 snackbar.setAction("OK", new View.OnClickListener() {
                     @Override
@@ -230,42 +212,45 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         }
 
         protected void onPostExecute(ArrayList<PointOfInterestModel> result) {
-            for (PointOfInterestModel pin : result) {
-                switch ((int) pin.getCategorieId()) {
-                    case 1:
-                        mMap.addMarker(new MarkerOptions().position(new LatLng(pin.getLatitude(), pin.getLongitude()))
-                                .title(pin.getNom())
-                                .snippet(pin.getDescription()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
-                        break;
-                    case 2:
-                        mMap.addMarker(new MarkerOptions().position(new LatLng(pin.getLatitude(), pin.getLongitude()))
-                                .title(pin.getNom())
-                                .snippet(pin.getDescription()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
-                        break;
-                    case 3:
-                        mMap.addMarker(new MarkerOptions().position(new LatLng(pin.getLatitude(), pin.getLongitude()))
-                                .title(pin.getNom())
-                                .snippet(pin.getDescription()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-                        break;
-                    case 4:
-                        mMap.addMarker(new MarkerOptions().position(new LatLng(pin.getLatitude(), pin.getLongitude()))
-                                .title(pin.getNom())
-                                .snippet(pin.getDescription()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-                        break;
-                    case 5:
-                        mMap.addMarker(new MarkerOptions().position(new LatLng(pin.getLatitude(), pin.getLongitude()))
-                                .title(pin.getNom())
-                                .snippet(pin.getDescription()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)));
-                        break;
-                    default:
-                        mMap.addMarker(new MarkerOptions().position(new LatLng(pin.getLatitude(), pin.getLongitude()))
-                                .title(pin.getNom())
-                                .snippet(pin.getDescription()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-                        break;
+            if(isTokenAlive) {
+                for (PointOfInterestModel pin : result) {
+                    switch ((int) pin.getCategorieId()) {
+                        case 1:
+                            mMap.addMarker(new MarkerOptions().position(new LatLng(pin.getLatitude(), pin.getLongitude()))
+                                    .title(pin.getNom())
+                                    .snippet(pin.getDescription()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+                            break;
+                        case 2:
+                            mMap.addMarker(new MarkerOptions().position(new LatLng(pin.getLatitude(), pin.getLongitude()))
+                                    .title(pin.getNom())
+                                    .snippet(pin.getDescription()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+                            break;
+                        case 3:
+                            mMap.addMarker(new MarkerOptions().position(new LatLng(pin.getLatitude(), pin.getLongitude()))
+                                    .title(pin.getNom())
+                                    .snippet(pin.getDescription()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+                            break;
+                        case 4:
+                            mMap.addMarker(new MarkerOptions().position(new LatLng(pin.getLatitude(), pin.getLongitude()))
+                                    .title(pin.getNom())
+                                    .snippet(pin.getDescription()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+                            break;
+                        case 5:
+                            mMap.addMarker(new MarkerOptions().position(new LatLng(pin.getLatitude(), pin.getLongitude()))
+                                    .title(pin.getNom())
+                                    .snippet(pin.getDescription()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)));
+                            break;
+                        default:
+                            mMap.addMarker(new MarkerOptions().position(new LatLng(pin.getLatitude(), pin.getLongitude()))
+                                    .title(pin.getNom())
+                                    .snippet(pin.getDescription()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                            break;
+                    }
+
                 }
-
+            }else{
+                startActivity(new Intent(MapActivity.this,LoginActivity.class));
             }
-
 
         }
 

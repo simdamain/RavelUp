@@ -23,7 +23,7 @@
         app:layout_constraintVertical_bias="0.3" />
 
     <Button
-        android:id="@+id/boutonToCarte"
+        android:id="@+id/buttonToMap_menuMap_activity"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -52,7 +52,7 @@
         app:layout_constraintTop_toTopOf="@+id/guideline4" />
 
     <TextView
-        android:id="@+id/rayonText"
+        android:id="@+id/radiusText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -82,7 +82,7 @@
         app:layout_constraintGuide_percent="0.5" />
 
     <ImageView
-        android:id="@+id/menu_carte_activity_help_button"
+        android:id="@+id/help_button_menuMap_activity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -95,7 +95,7 @@
         app:layout_constraintTop_toBottomOf="@+id/titleCategorie" />
 
     <ImageView
-        android:id="@+id/menu_carte_activity_help_button_seeker"
+        android:id="@+id/help_button_seeker_menuMap_activity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -103,7 +103,7 @@
         android:layout_marginTop="8dp"
         android:src="@android:drawable/ic_menu_help"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rayonText" />
+        app:layout_constraintTop_toBottomOf="@+id/radiusText" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerViewCat"

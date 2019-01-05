@@ -1,5 +1,6 @@
 package com.henallux.ravelup.dao.dataacess;
 
+import com.henallux.ravelup.exeptions.CityException;
 import com.henallux.ravelup.exeptions.LoginExecption;
 import com.henallux.ravelup.exeptions.SignUpException;
 import com.henallux.ravelup.models.CityModel;
@@ -37,15 +38,15 @@ public class ConnectionDAO{
             .serializeNulls()
             .create();
 
-    public TokenReceivedModel checkLogin(LoginModel user) throws LoginExecption,JSONException,IOException {
-
-        TokenReceivedModel tokenReceived = new TokenReceivedModel();
+    public TokenReceivedModel checkLogin(LoginModel user) throws LoginExecption {
+        try {
+            TokenReceivedModel tokenReceived = new TokenReceivedModel();
 
             URL url = new URL("http://ravelapidb.azurewebsites.net/api/Jwt");
-            HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
             connection.setRequestMethod("POST");
-            connection.setRequestProperty("Content-type","application/json");
+            connection.setRequestProperty("Content-type", "application/json");
 
             connection.setDoOutput(true);
             connection.setDoInput(true);
@@ -59,25 +60,14 @@ public class ConnectionDAO{
             streamWriter.flush();
             streamWriter.close();
 
-            if (connection.getResponseCode() == HttpURLConnection.HTTP_BAD_REQUEST)
-                throw new LoginExecption("Informations incorrectes ou manquantes");
-
-            if(connection.getResponseCode() == HttpURLConnection.HTTP_NOT_FOUND)
-                throw new LoginExecption("l'utilisateur introuvable");
-
-            BufferedReader buffer =new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            BufferedReader buffer = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             StringBuilder builder = new StringBuilder();
-            String jsonString="",line;
-            while((line=buffer.readLine())!=null){
+            String jsonString = "", line;
+            while ((line = buffer.readLine()) != null) {
                 builder.append(line);
             }
             buffer.close();
-            jsonString=builder.toString();
-
-
-//            InputStream inputStream = new BufferedInputStream(connection.getInputStream());
-//            java.util.Scanner scanner = new java.util.Scanner(inputStream).useDelimiter("\\A");
-//            String token = scanner.hasNext() ? scanner.next() : "";
+            jsonString = builder.toString();
 
             outputStream.close();
             connection.disconnect();
@@ -96,16 +86,24 @@ public class ConnectionDAO{
                 dateFormat.format(expirationDate);
                 tokenReceived.setExpirationDate(expirationDate);
             }
-        return tokenReceived;
+            return tokenReceived;
+        }
+        catch (JSONException e) {
+            throw new LoginExecption("Les informations sont incorrects");
+        }catch (IOException e){
+            throw  new LoginExecption("L'utilisateur est introuvable");
+        }
+
     }
 
-    public void signUp(UserModel user) throws SignUpException,IOException  {
+    public void signUp(UserModel user) throws SignUpException  {
 
+        try {
             URL url = new URL("http://ravelapidb.azurewebsites.net/api/User");
-            HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
             connection.setRequestMethod("POST");
-            connection.setRequestProperty("Content-type","application/json");
+            connection.setRequestProperty("Content-type", "application/json");
 
             connection.setDoInput(true);
 
@@ -118,33 +116,40 @@ public class ConnectionDAO{
             streamWriter.flush();
             streamWriter.close();
 
-            if (connection.getResponseCode() == HttpURLConnection.HTTP_BAD_REQUEST)
-                throw new SignUpException("Informations incorrectes ou manquantes");
-
             BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String test = br.readLine();
             outputStream.close();
             connection.disconnect();
-    }
-
-    public ArrayList<CityModel> getAllCities()throws Exception{
-
-        URL url = new URL("http://ravelapidb.azurewebsites.net/api/Ville/villes");
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
-        connection.setRequestProperty("Content-type","application/json");
-        BufferedReader buffer = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        StringBuilder builder = new StringBuilder();
-        String stringJSON = "", line;
-        while ((line = buffer.readLine()) != null) {
-            builder.append(line);
+        } catch (IOException e) {
+            throw  new SignUpException("Les informations sont incorrects ou manquantes");
         }
-        buffer.close();
-        stringJSON = builder.toString();
-        return jsonToCities(stringJSON);
+
     }
 
-    private ArrayList<CityModel>jsonToCities(String stringJSON) throws Exception {
+    public ArrayList<CityModel> getAllCities() throws CityException{
+
+        try {
+            URL url = new URL("http://ravelapidb.azurewebsites.net/api/Ville/villes");
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Content-type", "application/json");
+            BufferedReader buffer = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            StringBuilder builder = new StringBuilder();
+            String stringJSON = "", line;
+            while ((line = buffer.readLine()) != null) {
+                builder.append(line);
+            }
+            buffer.close();
+            stringJSON = builder.toString();
+            return jsonToCities(stringJSON);
+        } catch (IOException e) {
+            throw  new CityException("Erreur de connexion à la base de données");
+        } catch (JSONException e) {
+            throw  new CityException("Les villes n'ont pas été trouvées");
+        }
+    }
+
+    private ArrayList<CityModel>jsonToCities(String stringJSON) throws  JSONException {
         ArrayList<CityModel> cities= new ArrayList<>();
         CityModel city;
         JSONArray jsonArray=new JSONArray(stringJSON);

@@ -19,6 +19,10 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.henallux.ravelup.R;
 import com.henallux.ravelup.dao.dataacess.RavelDAO;
+import com.henallux.ravelup.exeptions.PinException;
+import com.henallux.ravelup.exeptions.TokenException;
+import com.henallux.ravelup.exeptions.TrajetException;
+import com.henallux.ravelup.features.connection.LoginActivity;
 import com.henallux.ravelup.models.JsonToTrajetModel;
 import com.henallux.ravelup.models.PointInteretTrajetModel;
 import com.henallux.ravelup.models.PointOfInterestModel;
@@ -117,24 +121,45 @@ public class DescriptionActivity extends AppCompatActivity {
         //endregion
     }
 
-
     class LoadPointInterest extends AsyncTask<Long,Void,PointOfInterestModel> {
         private RavelDAO ravelDAO= new RavelDAO();
+        Boolean isTokenAlive= true;
 
         @Override
         protected PointOfInterestModel doInBackground(Long ...params) {
             point= new PointOfInterestModel();
             try {
                 point =ravelDAO.getPointInterest(token,params[0]);
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (TokenException e) {
+                final Snackbar snackbar = Snackbar.make(findViewById(R.id.recyclerView_description_activity), e.getMessage(), Snackbar.LENGTH_INDEFINITE);
+                snackbar.setAction("OK", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        snackbar.dismiss();
+                    }
+                });
+                snackbar.show();
+                isTokenAlive= false;
+            } catch (PinException e) {
+                final Snackbar snackbar = Snackbar.make(findViewById(R.id.recyclerView_description_activity), e.getMessage(), Snackbar.LENGTH_INDEFINITE);
+                snackbar.setAction("OK", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        snackbar.dismiss();
+                    }
+                });
+                snackbar.show();
             }
             return point;
         }
 
         protected void onPostExecute(PointOfInterestModel result) {
-            titre.setText(titreString+point.getNom());
-            description.setText(point.getDescription());
+            if(isTokenAlive) {
+                titre.setText(titreString + point.getNom());
+                description.setText(point.getDescription());
+            }else {
+                startActivity(new Intent(DescriptionActivity.this,LoginActivity.class));
+            }
         }
 
         @Override
@@ -143,26 +168,45 @@ public class DescriptionActivity extends AppCompatActivity {
         }
     }
 
-
     class LoadTrajet extends AsyncTask<ArrayList<Long>,Void,ArrayList<TrajetModel>> {
         private RavelDAO ravelDAO= new RavelDAO();
-
+        Boolean isTokenAlive = true;
         @Override
         protected ArrayList<TrajetModel> doInBackground(ArrayList<Long> ...params) {
             trajets= new ArrayList<>();
             try {
                 trajets =ravelDAO.getTrajets(token,params[0]);
-            } catch (Exception e) {
-                e.printStackTrace();
+            }catch (TokenException e) {
+                final Snackbar snackbar = Snackbar.make(findViewById(R.id.recyclerView_description_activity), e.getMessage(), Snackbar.LENGTH_INDEFINITE);
+                snackbar.setAction("OK", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        snackbar.dismiss();
+                    }
+                });
+                snackbar.show();
+                isTokenAlive = false;
+            }catch (TrajetException e){
+                final Snackbar snackbar = Snackbar.make(findViewById(R.id.recyclerView_description_activity), e.getMessage(), Snackbar.LENGTH_INDEFINITE);
+                snackbar.setAction("OK", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        snackbar.dismiss();
+                    }
+                });
+                snackbar.show();
             }
-            return trajets;
-        }
+                return trajets;
 
+        }
         protected void onPostExecute(ArrayList<TrajetModel> result) {
-            adapter = new TrajetAdapter(result);
-            mRecyclerView.setAdapter(adapter);
+            if(isTokenAlive) {
+                adapter = new TrajetAdapter(result);
+                mRecyclerView.setAdapter(adapter);
+            }else{
+                startActivity(new Intent(DescriptionActivity.this,LoginActivity.class));
+            }
         }
-
         @Override
         protected void onCancelled() {
             super.onCancelled();

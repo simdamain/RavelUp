@@ -150,7 +150,7 @@ public class QrCodeActivity extends AppCompatActivity {
                                 startActivity(goToDescription);
                             }
                             catch (Exception e) {
-                                final Snackbar snackbar = Snackbar.make(findViewById(R.id.boutonToCarte),"Il y a eu un problème lors de la lecture du qr code", Snackbar.LENGTH_INDEFINITE);
+                                final Snackbar snackbar = Snackbar.make(findViewById(R.id.buttonToMap_menuMap_activity),"Il y a eu un problème lors de la lecture du qr code", Snackbar.LENGTH_INDEFINITE);
                                 snackbar.setAction("OK", new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {

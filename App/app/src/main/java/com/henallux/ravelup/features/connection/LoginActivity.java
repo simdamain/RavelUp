@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.henallux.ravelup.R;
@@ -23,10 +22,6 @@ import com.henallux.ravelup.features.menus.MainRedirectActivity;
 import com.henallux.ravelup.models.LoginModel;
 import com.henallux.ravelup.models.TokenReceivedModel;
 
-import org.json.JSONException;
-
-import java.io.IOException;
-import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity {
     private TokenReceivedModel mTokenReceived;
@@ -106,20 +101,7 @@ public class LoginActivity extends AppCompatActivity {
                 tokenReceived = connectionDAO.checkLogin(params[0]);
             }
             catch (LoginExecption e){
-                // TODO: 17/12/2018  a modifier et refaire les exceptions  passe dans les toasts mais ne les execute pas
-                Toast.makeText(getApplicationContext(), e.getMessage(),
-                        Toast.LENGTH_LONG).show();
-            } catch (IOException e) {
-                Toast.makeText(getApplicationContext(), e.getMessage(),
-                        Toast.LENGTH_LONG).show();
-            } catch (JSONException e) {
-                Toast.makeText(getApplicationContext(), e.getMessage(),
-                        Toast.LENGTH_LONG).show();
-            }
-            if( tokenReceived.getToken() != null)
-                return tokenReceived;
-            else{
-                final Snackbar snackbar = Snackbar.make(findViewById(R.id.connectionButton_login_activity),"Le login et/ou le mot de passe est incorrect", Snackbar.LENGTH_INDEFINITE);
+                final Snackbar snackbar = Snackbar.make(findViewById(R.id.connectionButton_login_activity),e.getMessage(), Snackbar.LENGTH_INDEFINITE);
                 snackbar.setAction("OK", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -127,9 +109,8 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
                 snackbar.show();
-                return new TokenReceivedModel();
             }
-
+            return tokenReceived;
         }
 
         @Override
@@ -140,7 +121,6 @@ public class LoginActivity extends AppCompatActivity {
                         .edit()
                         .putString("token",mTokenReceived.getToken())
                         .apply();
-
                 startActivity(new Intent(LoginActivity.this, MainRedirectActivity.class));
             }
         }

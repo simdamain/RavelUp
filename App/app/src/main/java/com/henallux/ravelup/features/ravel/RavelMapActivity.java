@@ -27,10 +27,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -38,6 +36,9 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.henallux.ravelup.R;
 import com.henallux.ravelup.dao.dataacess.RavelDAO;
+import com.henallux.ravelup.exeptions.PinException;
+import com.henallux.ravelup.exeptions.TokenException;
+import com.henallux.ravelup.features.connection.LoginActivity;
 import com.henallux.ravelup.models.PointOfInterestModel;
 import com.henallux.ravelup.models.TokenReceivedModel;
 
@@ -69,7 +70,7 @@ public class RavelMapActivity extends FragmentActivity implements OnMapReadyCall
             getLocationPermission();
         }
         else{
-            final Snackbar snackbar = Snackbar.make(findViewById(R.id.boutonToCarte),"La connexion internet s'est interrompu", Snackbar.LENGTH_INDEFINITE);
+            final Snackbar snackbar = Snackbar.make(findViewById(R.id.buttonToMap_menuMap_activity),"La connexion internet s'est interrompu", Snackbar.LENGTH_INDEFINITE);
             snackbar.setAction("OK", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -116,7 +117,7 @@ public class RavelMapActivity extends FragmentActivity implements OnMapReadyCall
             new LoadPins().execute(idPoints);
         }
         else{
-            final Snackbar snackbar = Snackbar.make(findViewById(R.id.boutonToCarte),"La connection internet s'est interrompu", Snackbar.LENGTH_INDEFINITE);
+            final Snackbar snackbar = Snackbar.make(findViewById(R.id.buttonToMap_menuMap_activity),"La connection internet s'est interrompu", Snackbar.LENGTH_INDEFINITE);
             snackbar.setAction("OK", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -179,6 +180,7 @@ public class RavelMapActivity extends FragmentActivity implements OnMapReadyCall
 
     class LoadPins extends AsyncTask<ArrayList<Long>,Void,ArrayList<PointOfInterestModel>> {
         private RavelDAO ravelDAO= new RavelDAO();
+        Boolean isTokenAlive;
         TokenReceivedModel token= new TokenReceivedModel();
 
         @Override
@@ -187,37 +189,51 @@ public class RavelMapActivity extends FragmentActivity implements OnMapReadyCall
             try {
                 token.setToken(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("token","no Token"));
                 pointOfInterest =ravelDAO.getPointsInterests(token,params[0]);
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (TokenException e) {
+                final Snackbar snackbar = Snackbar.make(findViewById(R.id.map),e.getMessage(), Snackbar.LENGTH_INDEFINITE);
+                snackbar.setAction("OK", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        snackbar.dismiss();
+                    }
+                });
+                snackbar.show();
+                isTokenAlive = false;
+            } catch (PinException e) {
+                final Snackbar snackbar = Snackbar.make(findViewById(R.id.map),e.getMessage(), Snackbar.LENGTH_INDEFINITE);
+                snackbar.setAction("OK", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        snackbar.dismiss();
+                    }
+                });
+                snackbar.show();
             }
             return pointOfInterest;
         }
 
         protected void onPostExecute(ArrayList<PointOfInterestModel> result) {
-
-
-            PolylineOptions options =new PolylineOptions().width(5).color(Color.BLUE).geodesic(true);
-            options.add(myLocation);
-            LatLng lastPin = myLocation;
-            String url= "http://maps.google.com/maps?f=d&hl=en&saddr="+myLocation.latitude+","+myLocation.longitude;
-            for (PointOfInterestModel pin : result) {
+            if (isTokenAlive) {
+                PolylineOptions options = new PolylineOptions().width(5).color(Color.BLUE).geodesic(true);
+                options.add(myLocation);
+                LatLng lastPin = myLocation;
+                String url = "http://maps.google.com/maps?f=d&hl=en&saddr=" + myLocation.latitude + "," + myLocation.longitude;
+                for (PointOfInterestModel pin : result) {
 //                mMap.addMarker(new MarkerOptions().position(new LatLng(pin.getLatitude(), pin.getLongitude()))
 //                        .title(pin.getNom())
 //                        .snippet(pin.getDescription()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
 //                options.add(new LatLng(pin.getLatitude(),pin.getLongitude()));
-                url+="&daddr="+pin.getLatitude()+","+pin.getLongitude();
+                    url += "&daddr=" + pin.getLatitude() + "," + pin.getLongitude();
                 }
-            //            Polyline polyline1= mMap.addPolyline(options);
-            url+="&ie=UTF8&0&om=0&output=kml";
-            Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-                    Uri.parse(url));
-            startActivity(intent);
+                //            Polyline polyline1= mMap.addPolyline(options);
+                url += "&ie=UTF8&0&om=0&output=kml";
+                Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                        Uri.parse(url));
+                startActivity(intent);
+            }else{
+                startActivity(new Intent(RavelMapActivity.this,LoginActivity.class));
             }
-
-
-
-
-
+        }
         @Override
         protected void onCancelled() {
             super.onCancelled();

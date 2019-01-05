@@ -20,6 +20,9 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.henallux.ravelup.R;
 import com.henallux.ravelup.dao.dataacess.MapDAO;
+import com.henallux.ravelup.exeptions.CategoryException;
+import com.henallux.ravelup.exeptions.TokenException;
+import com.henallux.ravelup.features.connection.LoginActivity;
 import com.henallux.ravelup.models.CategoryModel;
 import com.henallux.ravelup.models.TokenReceivedModel;
 
@@ -60,7 +63,7 @@ public class MapMenuActivity extends AppCompatActivity {
         loadCategories.execute(token);
     }
     else{
-        final Snackbar snackbar = Snackbar.make(findViewById(R.id.boutonToCarte),"La connection internet s'est interrompu", Snackbar.LENGTH_INDEFINITE);
+        final Snackbar snackbar = Snackbar.make(findViewById(R.id.buttonToMap_menuMap_activity),"La connection internet s'est interrompu", Snackbar.LENGTH_INDEFINITE);
         snackbar.setAction("OK", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -74,7 +77,7 @@ public class MapMenuActivity extends AppCompatActivity {
     //region Slider
         // SeekBar
         final SeekBar rayon = findViewById(R.id.seekBarRayon );
-         final TextView rayonText = findViewById(R.id.rayonText);
+         final TextView rayonText = findViewById(R.id.radiusText);
 
         rayonText.setText("Rayon : " + rayon.getProgress()+" km");
         //
@@ -101,11 +104,11 @@ public class MapMenuActivity extends AppCompatActivity {
         //endregion
 
     // region Help button
-        ImageView helpButton = findViewById(R.id.menu_carte_activity_help_button);
+        ImageView helpButton = findViewById(R.id.help_button_menuMap_activity);
         helpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Snackbar snackbar = Snackbar.make(findViewById(R.id.menu_carte_activity_help_button), "choisissez les catégories que vous voulez voir afficher sur la carte", Snackbar.LENGTH_INDEFINITE);
+                final Snackbar snackbar = Snackbar.make(findViewById(R.id.help_button_menuMap_activity), "choisissez les catégories que vous voulez voir afficher sur la carte", Snackbar.LENGTH_INDEFINITE);
                 snackbar.setAction("OK", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -116,11 +119,11 @@ public class MapMenuActivity extends AppCompatActivity {
             }
         });
 
-        ImageView helpButtonSeeker = findViewById(R.id.menu_carte_activity_help_button);
+        ImageView helpButtonSeeker = findViewById(R.id.help_button_menuMap_activity);
         helpButtonSeeker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Snackbar snackbar = Snackbar.make(findViewById(R.id.menu_carte_activity_help_button_seeker), "le rayon représente le zone autour de vous où les différents pin seront afficher", Snackbar.LENGTH_INDEFINITE);
+                final Snackbar snackbar = Snackbar.make(findViewById(R.id.help_button_seeker_menuMap_activity), "le rayon représente le zone autour de vous où les différents pin seront afficher", Snackbar.LENGTH_INDEFINITE);
                 snackbar.setAction("OK", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -133,7 +136,7 @@ public class MapMenuActivity extends AppCompatActivity {
         //endregion
 
     //region button MapActivity
-        Button map = findViewById(R.id.boutonToCarte);
+        Button map = findViewById(R.id.buttonToMap_menuMap_activity);
         map.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -158,21 +161,45 @@ public class MapMenuActivity extends AppCompatActivity {
 
     class LoadCategories extends AsyncTask<TokenReceivedModel,Void,ArrayList<CategoryModel>> {
         private MapDAO mapDAO= new MapDAO();
+        Boolean isTokenAlive= true;
 
         @Override
         protected ArrayList<CategoryModel> doInBackground(TokenReceivedModel...params) {
+
             idCategories = new ArrayList<>();
             try {
                 allCategories =mapDAO.getAllCategories(params[0]);
-            } catch (Exception e) {
-                e.printStackTrace();
+            }catch (TokenException e) {
+                final Snackbar snackbar = Snackbar.make(findViewById(R.id.buttonToMap_menuMap_activity), e.getMessage(), Snackbar.LENGTH_INDEFINITE);
+                snackbar.setAction("OK", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        snackbar.dismiss();
+                    }
+                });
+                snackbar.show();
+                isTokenAlive= false;
+            }catch (CategoryException e){
+                final Snackbar snackbar = Snackbar.make(findViewById(R.id.buttonToMap_menuMap_activity),e.getMessage(), Snackbar.LENGTH_INDEFINITE);
+                snackbar.setAction("OK", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        snackbar.dismiss();
+                    }
+                });
+                snackbar.show();
             }
             return allCategories;
         }
 
         protected void onPostExecute(ArrayList<CategoryModel> result){
-            adapter = new CategorieAdapter(result);
-            mRecyclerView.setAdapter(adapter);
+            if (isTokenAlive) {
+                adapter = new CategorieAdapter(result);
+                mRecyclerView.setAdapter(adapter);
+            }
+            else{
+                startActivity(new Intent(MapMenuActivity.this,LoginActivity.class));
+            }
         }
 
         @Override
