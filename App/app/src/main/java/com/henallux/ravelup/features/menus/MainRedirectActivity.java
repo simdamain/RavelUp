@@ -23,7 +23,6 @@ public class MainRedirectActivity extends AppCompatActivity {
         ravel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO change that shit
                 startActivity(new Intent(MainRedirectActivity.this, QrCodeActivity.class));
             }
         });

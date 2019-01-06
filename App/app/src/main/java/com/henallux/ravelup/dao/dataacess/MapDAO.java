@@ -46,7 +46,7 @@ public class MapDAO {
             stringJSON = builder.toString();
             return jsonToCategories(stringJSON);
         } catch (IOException e) {
-            throw new TokenException("la session a expirée");
+            throw new CategoryException("Les catégories n'ont pas été trouvées");
         } catch (JSONException e) {
             throw new CategoryException("Les catégories n'ont pas été trouvées");
         }
@@ -95,7 +95,7 @@ public class MapDAO {
         }catch (JSONException e){
             throw new PinException("Les points d'intérêts n'ont pas été trouvés");
         }catch(IOException e){
-            throw new TokenException("la session a expirée");
+            throw new PinException("Les points d'intérêts n'ont pas été trouvés");
         }
     }
 

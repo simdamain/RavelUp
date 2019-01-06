@@ -1,10 +1,13 @@
 package com.henallux.ravelup.dao.dataacess;
 
+import com.google.android.gms.maps.model.PointOfInterest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.henallux.ravelup.exeptions.ImageException;
 import com.henallux.ravelup.exeptions.PinException;
 import com.henallux.ravelup.exeptions.TokenException;
 import com.henallux.ravelup.exeptions.TrajetException;
+import com.henallux.ravelup.models.ImageModel;
 import com.henallux.ravelup.models.PointOfInterestModel;
 import com.henallux.ravelup.models.TokenReceivedModel;
 import com.henallux.ravelup.models.TrajetModel;
@@ -50,7 +53,7 @@ public class RavelDAO {
             stringJSON = builder.toString();
             return jsonToPointInteret(stringJSON);
         } catch (IOException e) {
-            throw new TokenException("la session a expirée");
+            throw new PinException("Le point d'intérêt n'a pas été trouvé");
         } catch (JSONException e) {
             throw new PinException("Le point d'intérêt n'a pas été trouvé");
         }
@@ -105,7 +108,7 @@ public class RavelDAO {
 
             return jsonToTrajet(jsonString);
         } catch (IOException e) {
-            throw new TokenException("la session a expirée");
+            throw new TrajetException("Le trajet n'a pas été trouvé");
         } catch (JSONException e) {
             throw new TrajetException("Le trajet n'a pas été trouvé");
         }
@@ -164,7 +167,7 @@ public class RavelDAO {
         } catch (JSONException e) {
             throw new PinException("Les points d'intérêts n'ont pas été trouvés");
         } catch (IOException e) {
-            throw new TokenException("la session a expirée");
+            throw new PinException("Les points d'intérêts n'ont pas été trouvés");
         }
     }
 
@@ -184,6 +187,42 @@ public class RavelDAO {
             pointOfInterest.add(pin);
         }
         return pointOfInterest;
+    }
+
+    public ArrayList<String> getImages(TokenReceivedModel token, Long idPointInteret) throws TokenException,ImageException {
+        try {
+            URL url = new URL("http://ravelapidb.azurewebsites.net/api/Images/"+idPointInteret);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Content-type", "application/json");
+            connection.setRequestProperty("Authorization", "Bearer " + token.getToken());
+
+            BufferedReader buffer = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            StringBuilder builder = new StringBuilder();
+            String stringJSON = "", line;
+            while ((line = buffer.readLine()) != null) {
+                builder.append(line);
+            }
+            buffer.close();
+            stringJSON = builder.toString();
+            return jsonToImages(stringJSON);
+        } catch (JSONException e) {
+            throw new ImageException("Les images n'ont pas été trouvées (Url)");
+        } catch (IOException e) {
+            throw new ImageException("Les images n'ont pas été trouvées (Url)");
+        }
+    }
+
+        private ArrayList<String>jsonToImages(String stringJSON) throws JSONException {
+            ArrayList<String> urlImages= new ArrayList<>();
+            JSONArray jsonArray=new JSONArray(stringJSON);
+            for (int i=0;i<jsonArray.length();i++){
+                JSONObject jsonImage = jsonArray.getJSONObject(i);
+                urlImages.add(jsonImage.getString("url"));
+            }
+            return urlImages;
+
     }
 
 }

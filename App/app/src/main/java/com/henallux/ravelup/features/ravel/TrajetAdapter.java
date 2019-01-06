@@ -14,8 +14,6 @@ import java.util.ArrayList;
 
 public class TrajetAdapter extends RecyclerView.Adapter<TrajetAdapter.MyViewHolder> implements View.OnClickListener,View.OnLongClickListener{
     private ArrayList<TrajetModel> dataset;
-    private Integer idTrajet;
-
 
 
 

@@ -55,24 +55,24 @@ public class MapMenuActivity extends AppCompatActivity {
 
         token.setToken(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("token","no Token"));
 
-    //region Test internet
-    activeNetwork = connectivityManager.getActiveNetworkInfo();
-    isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-    if(isConnected) {
-        loadCategories= new LoadCategories();
-        loadCategories.execute(token);
-    }
-    else{
-        final Snackbar snackbar = Snackbar.make(findViewById(R.id.buttonToMap_menuMap_activity),"La connection internet s'est interrompu", Snackbar.LENGTH_INDEFINITE);
-        snackbar.setAction("OK", new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    snackbar.dismiss();
-                }
-            });
-        snackbar.show();
-    }
-    //endregionk
+        //region Test internet
+        activeNetwork = connectivityManager.getActiveNetworkInfo();
+        isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        if(isConnected) {
+            loadCategories= new LoadCategories();
+            loadCategories.execute(token);
+        }
+        else{
+            final Snackbar snackbar = Snackbar.make(findViewById(R.id.buttonToMap_menuMap_activity),"La connection internet s'est interrompu", Snackbar.LENGTH_INDEFINITE);
+            snackbar.setAction("OK", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        snackbar.dismiss();
+                    }
+                });
+            snackbar.show();
+        }
+        //endregionk
 
     //region Slider
         // SeekBar
@@ -119,7 +119,7 @@ public class MapMenuActivity extends AppCompatActivity {
             }
         });
 
-        ImageView helpButtonSeeker = findViewById(R.id.help_button_menuMap_activity);
+        ImageView helpButtonSeeker = findViewById(R.id.help_button_seeker_menuMap_activity);
         helpButtonSeeker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

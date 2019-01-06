@@ -15,12 +15,12 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+
 import android.view.View;
 import android.widget.Toast;
 
@@ -41,10 +41,6 @@ import com.henallux.ravelup.features.connection.LoginActivity;
 import com.henallux.ravelup.models.PinModel;
 import com.henallux.ravelup.models.PointOfInterestModel;
 import com.henallux.ravelup.models.TokenReceivedModel;
-
-import org.json.JSONException;
-
-import java.io.IOException;
 import java.util.ArrayList;
 
 
@@ -53,7 +49,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private GoogleMap mMap;
     private ArrayList<PointOfInterestModel> allPins;
     private PinModel pin;
-    private LocationRequest mLocationRequest;
     private NetworkInfo activeNetwork;
     private boolean isConnected;
     private ConnectivityManager connectivityManager;
@@ -61,8 +56,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
     private static final float DEFAULT_ZOOM = 16f;
-
-//todo faire pour que quand on appuye sur une pin elle affiche le tout ou quoi  + images
 
 
     @Override
@@ -72,7 +65,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
 
         pin= new PinModel();
         connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-
 
             getLocationPermission();
 
@@ -110,11 +102,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             });
             snackbar.show();
         }
+
         //endregion
 
     }
 
-    private void getLocationPermission(){
+    private void getLocationPermission() {
         String[] permissions= {Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION};
         if (ContextCompat.checkSelfPermission(this.getApplicationContext(),Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
             if(ContextCompat.checkSelfPermission(this.getApplicationContext(),Manifest.permission.ACCESS_COARSE_LOCATION)==PackageManager.PERMISSION_GRANTED){
@@ -128,33 +121,37 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             ActivityCompat.requestPermissions(this,permissions,LOCATION_PERMISSION_REQUEST_CODE);
         }
     }
+    private void initMap(){
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+    }
 
     private void getDeviseLocation(){
         mFusedLocationProviderClient= LocationServices.getFusedLocationProviderClient(this);
-        try{
-            if(mLocationPermissionsGranted){
+            try{
+            if(mLocationPermissionsGranted) {
                 final Task location = mFusedLocationProviderClient.getLastLocation();
                 location.addOnCompleteListener(new OnCompleteListener() {
                     @Override
                     public void onComplete(@NonNull Task task) {
-                        if(task.isSuccessful()){
-                            //todo quand geolocalisation desactiver plante => l'imposé
+                        if (task.isSuccessful()) {
                             Location currentLocation = (Location) task.getResult();
-                            LatLng location = new LatLng(currentLocation.getLatitude(),currentLocation.getLongitude());
+                            LatLng location = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
                             mMap.addMarker(new MarkerOptions().position(location)
                                     .title("Votre position"));
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location,DEFAULT_ZOOM));
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, DEFAULT_ZOOM));
 
                             PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
                                     .edit()
-                                    .putFloat("Longitude",(float)currentLocation.getLongitude())
+                                    .putFloat("Longitude", (float) currentLocation.getLongitude())
                                     .apply();
                             PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
                                     .edit()
-                                    .putFloat("Latitude",(float)currentLocation.getLatitude())
+                                    .putFloat("Latitude", (float) currentLocation.getLatitude())
                                     .apply();
-                            }else{
-                            Toast.makeText(MapActivity.this,"Impossible d'obtenir votre localisation", Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(MapActivity.this, "Impossible d'obtenir votre localisation", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
@@ -171,11 +168,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         }
     }
 
-    private void initMap(){
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-    }
 
     class LoadPins extends AsyncTask<PinModel,Void,ArrayList<PointOfInterestModel>> {
         private MapDAO mapDAO= new MapDAO();
@@ -246,7 +238,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                                     .snippet(pin.getDescription()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
                             break;
                     }
-
                 }
             }else{
                 startActivity(new Intent(MapActivity.this,LoginActivity.class));

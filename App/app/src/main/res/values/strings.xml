@@ -53,4 +53,7 @@
     <string name="help_for_password">help for password</string>
     <string name="help_for_birthdate">help for birthdate</string>
     <string name="title_activity_ravel_map">Map</string>
+    <string name="title_infowindow" />
+    <string name="description_infowindow" />
+    <string name="image_du_points_d_interet">image du points d\'interet</string>
 </resources>

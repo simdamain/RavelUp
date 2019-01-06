@@ -3,17 +3,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.henallux.ravelup">
 
-    <uses-feature
-        android:name="android.hardware.camera"
-        android:required="true" />
-    <uses-feature android:name="android.hardware.camera.autofocus" />
-
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -54,11 +54,8 @@
             android:label="Read Barcode" />
         <activity
             android:name=".features.map.MapActivity"
-            android:label="@string/title_activity_map"></activity>
+            android:label="@string/title_activity_map" />
         <activity android:name=".features.ravel.DescriptionActivity" />
-        <activity
-            android:name=".features.ravel.RavelMapActivity"
-            android:label="@string/title_activity_ravel_map"></activity>
     </application>
 
 </manifest>
