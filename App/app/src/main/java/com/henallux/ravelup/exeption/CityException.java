@@ -1,9 +1,9 @@
-package com.henallux.ravelup.exeptions;
+package com.henallux.ravelup.exeption;
 
-public class TrajetException extends Exception {
+public class CityException extends Exception {
     private String message;
 
-    public TrajetException(String message) {
+    public CityException(String message) {
         this.message = message;
     }
 

@@ -20,57 +20,61 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.henallux.ravelup.R;
 import com.henallux.ravelup.dao.dataacess.MapDAO;
-import com.henallux.ravelup.exeptions.CategoryException;
-import com.henallux.ravelup.exeptions.TokenException;
+import com.henallux.ravelup.exeption.CategoryException;
+import com.henallux.ravelup.exeption.TokenException;
 import com.henallux.ravelup.features.connection.LoginActivity;
-import com.henallux.ravelup.models.CategoryModel;
-import com.henallux.ravelup.models.TokenReceivedModel;
+import com.henallux.ravelup.features.menus.MainRedirectActivity;
+import com.henallux.ravelup.model.CategoryModel;
+import com.henallux.ravelup.model.TokenReceivedModel;
 
 import java.util.ArrayList;
 
 public class MapMenuActivity extends AppCompatActivity {
-    private LoadCategories loadCategories;
+
     private RecyclerView mRecyclerView;
-    private RecyclerView.LayoutManager layoutManager;
-    private CategorieAdapter adapter;
+    private CategoryAdapter adapter;
+
     private ArrayList<CategoryModel> allCategories;
     private ArrayList<Long> idCategories;
-    private TokenReceivedModel token;
-    private NetworkInfo activeNetwork;
-    private boolean isConnected;
-    private ConnectivityManager connectivityManager;
+
     private Gson gsonBuilder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_menu_map);
-        allCategories= new ArrayList<>();
-        connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        token = new TokenReceivedModel();
+        setContentView(R.layout.activity_menu_map);
+
+        allCategories= new ArrayList<>();
+
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        TokenReceivedModel token = new TokenReceivedModel();
         mRecyclerView = findViewById(R.id.recyclerViewCat);
-        layoutManager = new LinearLayoutManager(this);
+
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
 
         token.setToken(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("token","no Token"));
 
         //region Test internet
-        activeNetwork = connectivityManager.getActiveNetworkInfo();
-        isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
         if(isConnected) {
-            loadCategories= new LoadCategories();
+            LoadCategories loadCategories = new LoadCategories();
             loadCategories.execute(token);
         }
         else{
-            final Snackbar snackbar = Snackbar.make(findViewById(R.id.buttonToMap_menuMap_activity),"La connection internet s'est interrompu", Snackbar.LENGTH_INDEFINITE);
+            final Snackbar snackbar = Snackbar.make(findViewById(R.id.buttonToMap_menuMap_activity),"La connexion internet s'est interrompue redirection vers le menu principale", Snackbar.LENGTH_INDEFINITE);
             snackbar.setAction("OK", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         snackbar.dismiss();
+                        startActivity(new Intent(MapMenuActivity.this,MainRedirectActivity.class));
                     }
                 });
             snackbar.show();
+
         }
         //endregionk
 
@@ -160,13 +164,15 @@ public class MapMenuActivity extends AppCompatActivity {
     }
 
     class LoadCategories extends AsyncTask<TokenReceivedModel,Void,ArrayList<CategoryModel>> {
-        private MapDAO mapDAO= new MapDAO();
+
+        MapDAO mapDAO= new MapDAO();
         Boolean isTokenAlive= true;
 
         @Override
         protected ArrayList<CategoryModel> doInBackground(TokenReceivedModel...params) {
 
             idCategories = new ArrayList<>();
+
             try {
                 allCategories =mapDAO.getAllCategories(params[0]);
             }catch (TokenException e) {
@@ -189,12 +195,13 @@ public class MapMenuActivity extends AppCompatActivity {
                 });
                 snackbar.show();
             }
+
             return allCategories;
         }
 
         protected void onPostExecute(ArrayList<CategoryModel> result){
             if (isTokenAlive) {
-                adapter = new CategorieAdapter(result);
+                adapter = new CategoryAdapter(result);
                 mRecyclerView.setAdapter(adapter);
             }
             else{

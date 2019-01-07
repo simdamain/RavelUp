@@ -38,6 +38,7 @@ public class RedirectActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        //TODO MET UNE SNACKBAR
         Toast.makeText(getApplicationContext(), "Bouton retour désactivé", Toast.LENGTH_SHORT).show();
     }
 

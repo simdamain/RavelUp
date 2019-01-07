@@ -3,13 +3,13 @@ package com.henallux.ravelup.dao.dataacess;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import com.henallux.ravelup.exeptions.CategoryException;
-import com.henallux.ravelup.exeptions.PinException;
-import com.henallux.ravelup.exeptions.TokenException;
-import com.henallux.ravelup.models.CategoryModel;
-import com.henallux.ravelup.models.PinModel;
-import com.henallux.ravelup.models.PointOfInterestModel;
-import com.henallux.ravelup.models.TokenReceivedModel;
+import com.henallux.ravelup.exeption.CategoryException;
+import com.henallux.ravelup.exeption.PinException;
+import com.henallux.ravelup.exeption.TokenException;
+import com.henallux.ravelup.model.CategoryModel;
+import com.henallux.ravelup.model.PinModel;
+import com.henallux.ravelup.model.PointOfInterestModel;
+import com.henallux.ravelup.model.TokenReceivedModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;

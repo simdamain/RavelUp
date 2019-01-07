@@ -1,4 +1,4 @@
-package com.henallux.ravelup.exeptions;
+package com.henallux.ravelup.exeption;
 
 public class ImageException extends Exception{
     private String message;

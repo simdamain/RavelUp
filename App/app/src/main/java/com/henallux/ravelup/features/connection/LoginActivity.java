@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Parcelable;
+import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
@@ -17,21 +19,26 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.henallux.ravelup.R;
 import com.henallux.ravelup.dao.dataacess.ConnectionDAO;
-import com.henallux.ravelup.exeptions.LoginExecption;
+import com.henallux.ravelup.exeption.LoginExecption;
 import com.henallux.ravelup.features.menus.MainRedirectActivity;
-import com.henallux.ravelup.models.LoginModel;
-import com.henallux.ravelup.models.TokenReceivedModel;
-
+import com.henallux.ravelup.model.LoginModel;
+import com.henallux.ravelup.model.TokenReceivedModel;
 
 public class LoginActivity extends AppCompatActivity {
-    private TokenReceivedModel mTokenReceived;
-    private NetworkInfo activeNetwork;
+
     private boolean isConnected;
+
+    private String loginValue;
+    private String passwordValue;
+    private TextInputLayout password;
+    private TextInputLayout login;
+    private NetworkInfo activeNetwork;
     private ConnectivityManager connectivityManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_login);
         connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
 
@@ -40,7 +47,7 @@ public class LoginActivity extends AppCompatActivity {
         Glide.with(this).load(R.drawable.logo).into(logo);
         //endregion
 
-        //region connexion button
+        //region connection button
         Button connexion = findViewById(R.id.connectionButton_login_activity);
         connexion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,8 +56,8 @@ public class LoginActivity extends AppCompatActivity {
                 LoginModel loginModel = new LoginModel();
                 Boolean hasError = false;
 
-                TextInputLayout login = findViewById(R.id.login_LoginActivity);
-                String loginValue = login.getEditText().getText().toString();
+                login = findViewById(R.id.login_LoginActivity);
+                loginValue = login.getEditText().getText().toString();
                 login.setError(null);
                 if(!loginValue.equals("")){
                     loginModel.setUserName(loginValue);
@@ -59,8 +66,8 @@ public class LoginActivity extends AppCompatActivity {
                     hasError=true;
                 }
 
-                TextInputLayout password = findViewById(R.id.motDePasse_LoginActivity);
-                String passwordValue = password.getEditText().getText().toString();
+                password = findViewById(R.id.password_LoginActivity);
+                passwordValue = password.getEditText().getText().toString();
                 password.setError(null);
                 if(!passwordValue.equals("")){
                     loginModel.setPassword(passwordValue);
@@ -71,23 +78,24 @@ public class LoginActivity extends AppCompatActivity {
 
                 activeNetwork = connectivityManager.getActiveNetworkInfo();
                 isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-                if(!hasError && isConnected)
-                    new CheckLogin().execute(loginModel);
-                else{
-                    final Snackbar snackbar = Snackbar.make(findViewById(R.id.connectionButton_login_activity),"La connection internet s'est interrompue", Snackbar.LENGTH_INDEFINITE);
-                    snackbar.setAction("OK", new View.OnClickListener() {
+                if(!hasError){
+                    if(isConnected)
+                        new CheckLogin().execute(loginModel);
+                    else {
+                        final Snackbar snackbar = Snackbar.make(findViewById(R.id.connectionButton_login_activity),"La connexion internet s'est interrompue", Snackbar.LENGTH_INDEFINITE);
+                        snackbar.setAction("OK", new View.OnClickListener() {
                             @Override
                             public void onClick(View v) { snackbar.dismiss();
                             }
                         });
-                    snackbar.show();
+                        snackbar.show();
+                    }
                 }
-
-
             }
         });
         //endregion
     }
+
 
     private class CheckLogin extends AsyncTask<LoginModel,Void,TokenReceivedModel>{
         private ConnectionDAO connectionDAO= new ConnectionDAO();
@@ -115,12 +123,12 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(TokenReceivedModel tokenReceived) {
-            mTokenReceived = tokenReceived;
-            if (mTokenReceived.getErrorException().equals("") && mTokenReceived.getCode() == 200) {
+            if (tokenReceived.getErrorException().equals("") && tokenReceived.getCode() == 200) {
                 PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
                         .edit()
-                        .putString("token",mTokenReceived.getToken())
+                        .putString("token", tokenReceived.getToken())
                         .apply();
+
                 startActivity(new Intent(LoginActivity.this, MainRedirectActivity.class));
             }
         }

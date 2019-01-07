@@ -1,6 +1,7 @@
-package com.henallux.ravelup.models;
+package com.henallux.ravelup.model;
 
 public class CityModel {
+
     private int id;
     private String libelle;
     private int codePostal;

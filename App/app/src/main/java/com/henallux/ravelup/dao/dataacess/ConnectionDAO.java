@@ -1,28 +1,24 @@
 package com.henallux.ravelup.dao.dataacess;
 
-import com.henallux.ravelup.exeptions.CityException;
-import com.henallux.ravelup.exeptions.LoginExecption;
-import com.henallux.ravelup.exeptions.SignUpException;
-import com.henallux.ravelup.models.CityModel;
-import com.henallux.ravelup.models.LoginModel;
-import com.henallux.ravelup.models.TokenReceivedModel;
+import com.henallux.ravelup.exeption.CityException;
+import com.henallux.ravelup.exeption.LoginExecption;
+import com.henallux.ravelup.exeption.SignUpException;
+import com.henallux.ravelup.model.CityModel;
+import com.henallux.ravelup.model.LoginModel;
+import com.henallux.ravelup.model.TokenReceivedModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import com.google.gson.*;
-import com.henallux.ravelup.models.UserModel;
+import com.henallux.ravelup.model.UserModel;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         app:layout_constraintEnd_toStartOf="@+id/guideline7"
@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/login_signUpActivity"
             android:inputType="text"
-            android:maxLines="1"/>
+            android:maxLines="1" />
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -90,7 +90,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         app:layout_constraintEnd_toEndOf="parent"

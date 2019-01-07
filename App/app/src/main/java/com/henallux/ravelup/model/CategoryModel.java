@@ -1,4 +1,4 @@
-package com.henallux.ravelup.models;
+package com.henallux.ravelup.model;
 
 public class CategoryModel {
     private Long id;

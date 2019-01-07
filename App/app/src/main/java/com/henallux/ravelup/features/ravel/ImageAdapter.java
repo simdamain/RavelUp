@@ -19,7 +19,7 @@ public class ImageAdapter extends PagerAdapter {
     private LayoutInflater layoutInflater;
     private ArrayList<String> mResources;
 
-    public ImageAdapter(Context context, ArrayList<String> mResources) {
+    ImageAdapter(Context context, ArrayList<String> mResources) {
         this.context = context;
         this.mResources = mResources;
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -39,12 +39,11 @@ public class ImageAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup container, int position) {
         View itemView = layoutInflater.inflate(R.layout.slide, container, false);
 
-        final ImageView ivPhoto = (ImageView) itemView.findViewById(R.id.imgSlider);
+        final ImageView ivPhoto = itemView.findViewById(R.id.imgSlider);
 
         if (!mResources.get(position).equals("")){
             Glide.with(context)
                     .load(mResources.get(position).trim())
-//                    .crossFade()
                     .into(ivPhoto);
         }
 

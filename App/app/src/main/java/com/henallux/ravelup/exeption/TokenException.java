@@ -1,9 +1,9 @@
-package com.henallux.ravelup.exeptions;
+package com.henallux.ravelup.exeption;
 
-public class SignUpException extends Exception {
+public class TokenException extends Exception {
     private String message;
 
-    public SignUpException(String message) {
+    public TokenException(String message) {
         this.message = message;
     }
 

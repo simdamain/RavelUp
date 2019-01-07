@@ -18,6 +18,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.google.android.gms.vision.CameraSource;
@@ -26,7 +27,8 @@ import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
 import com.google.gson.Gson;
 import com.henallux.ravelup.R;
-import com.henallux.ravelup.models.TokenReceivedModel;
+import com.henallux.ravelup.features.menus.MainRedirectActivity;
+import com.henallux.ravelup.model.TokenReceivedModel;
 /*import com.henallux.ravelup.features;
 import com.henallux.smartcity.DAO.PlantJSONDAO;
 import com.henallux.smartcity.R;*/
@@ -35,32 +37,34 @@ import java.io.IOException;
 
 
 public class QrCodeActivity extends AppCompatActivity {
-        private TokenReceivedModel token;
-        private ConnectivityManager connectivityManager;
-        private NetworkInfo activeNetwork;
-        private boolean isConnected;
-        private SurfaceView cameraPreview;
-        private TextView txtView;
-        private BarcodeDetector barcodeDetector;
-        private CameraSource cameraSource;
-        private Gson gsonBuilder;
-        final int RequestCameraPermissionID = 1001;
-        //to avoid spamming scan of a qr code
-        private boolean hasScanned = false;
+
+
+    private TextView txtView;
+
+    private CameraSource cameraSource;
+    private SurfaceView cameraPreview;
+    private ConnectivityManager connectivityManager;
+    final int RequestCameraPermissionID = 1001;
+
+    //to avoid spamming scan of a qr code
+
+    private boolean hasScanned = false;
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_qr_code);
-            connectivityManager = (ConnectivityManager) QrCodeActivity.this.getSystemService(Context.CONNECTIVITY_SERVICE);
-            token = new TokenReceivedModel();
-            token.setToken(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("Token","no Token"));
 
+            setContentView(R.layout.activity_qr_code);
+
+            connectivityManager = (ConnectivityManager) QrCodeActivity.this.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+            TokenReceivedModel token = new TokenReceivedModel();
+            token.setToken(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("Token","no Token"));
 
             cameraPreview =findViewById(R.id.scanner);
             txtView =findViewById(R.id.explanationQRDestination);
 
-            barcodeDetector = new BarcodeDetector.Builder(this)
+            BarcodeDetector barcodeDetector = new BarcodeDetector.Builder(this)
                     .setBarcodeFormats(Barcode.QR_CODE)
                     .build();
             cameraSource = new CameraSource
@@ -130,40 +134,44 @@ public class QrCodeActivity extends AppCompatActivity {
             @Override
             public void receiveDetections(Detector.Detections<Barcode> detections) {
                 final SparseArray<Barcode> qrcodes = detections.getDetectedItems();
-                if(qrcodes.size() != 0 && !hasScanned){
-                    txtView.post(new Runnable(){
-                        @Override
-                        public void run(){
-                            gsonBuilder= new Gson();
-                            String json = qrcodes.valueAt(0).displayValue;
 
-                            PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
-                                    .edit()
-                                    .putString("jsonTrajet",json)
-                                    .apply();
-                            //Create vibrate
-                            Vibrator vibrator = (Vibrator)getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
-                            vibrator.vibrate(250);
 
-                            try {
-                                Intent goToDescription = new Intent(QrCodeActivity.this, DescriptionActivity.class);
-                                startActivity(goToDescription);
-                            }
-                            catch (Exception e) {
-                                final Snackbar snackbar = Snackbar.make(findViewById(R.id.buttonToMap_menuMap_activity),"Il y a eu un problème lors de la lecture du qr code", Snackbar.LENGTH_INDEFINITE);
-                                snackbar.setAction("OK", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        snackbar.dismiss();
+                    if(qrcodes.size() != 0 && !hasScanned){
+                        hasScanned = true;
+                        txtView.post(new Runnable(){
+                            @Override
+                            public void run(){
+                                Gson gsonBuilder = new Gson();
+                                String json = qrcodes.valueAt(0).displayValue;
+
+                                PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
+                                        .edit()
+                                        .putString("jsonTrajet",json)
+                                        .apply();
+                                //Create vibrate
+                                Vibrator vibrator = (Vibrator)getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+                                vibrator.vibrate(250);
+                                NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
+                                boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+                                if(isConnected) {
+                                        Intent goToDescription = new Intent(QrCodeActivity.this, DescriptionActivity.class);
+                                        startActivity(goToDescription);
+                                }else{
+                                        final Snackbar snackbar = Snackbar.make(findViewById(R.id.scanner),"La connexion internet s'est interrompue reessayez le scan", Snackbar.LENGTH_INDEFINITE);
+                                        snackbar.setAction("OK", new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                snackbar.dismiss();
+                                            }
+                                        });
+                                        snackbar.show();
+                                    hasScanned = false;
                                     }
-                                });
-                                snackbar.show();
                             }
-                        }
-                    });
-                    hasScanned = true;
+                        });
+//                        hasScanned = true;
+                    }
                 }
-            }
         };
 
     }

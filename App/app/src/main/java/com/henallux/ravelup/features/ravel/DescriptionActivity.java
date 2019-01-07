@@ -22,33 +22,38 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.henallux.ravelup.R;
 import com.henallux.ravelup.dao.dataacess.RavelDAO;
-import com.henallux.ravelup.exeptions.ImageException;
-import com.henallux.ravelup.exeptions.PinException;
-import com.henallux.ravelup.exeptions.TokenException;
-import com.henallux.ravelup.exeptions.TrajetException;
+import com.henallux.ravelup.exeption.ImageException;
+import com.henallux.ravelup.exeption.PinException;
+import com.henallux.ravelup.exeption.TokenException;
+import com.henallux.ravelup.exeption.TrajetException;
 import com.henallux.ravelup.features.connection.LoginActivity;
-import com.henallux.ravelup.models.JsonToTrajetModel;
-import com.henallux.ravelup.models.PointInteretTrajetModel;
-import com.henallux.ravelup.models.PointOfInterestModel;
-import com.henallux.ravelup.models.TokenReceivedModel;
-import com.henallux.ravelup.models.TrajetModel;
+import com.henallux.ravelup.model.JsonToTrajetModel;
+import com.henallux.ravelup.model.PointInteretTrajetModel;
+import com.henallux.ravelup.model.PointOfInterestModel;
+import com.henallux.ravelup.model.TokenReceivedModel;
+import com.henallux.ravelup.model.TrajetModel;
+
+import org.json.JSONException;
 
 import java.util.ArrayList;
 
 public class DescriptionActivity extends AppCompatActivity {
-    private TokenReceivedModel token;
-    private PointOfInterestModel point;
-    private PointInteretTrajetModel actualPointInterest;
-    private ArrayList<Long> idPoints;
-    private ArrayList<TrajetModel> trajets;
-    private TrajetModel trajet;
-    private ArrayList<String> imagesUrl;
-    private boolean isConnected;
-    private NetworkInfo activeNetwork;
-    private ConnectivityManager connectivityManager;
+
     private TextView titre;
     private TextView description;
     private RecyclerView mRecyclerView;
+
+    private ArrayList<Long> idPoints;
+    private ArrayList<TrajetModel> trajets;
+    private TokenReceivedModel token;
+    private PointOfInterestModel point;
+    private PointInteretTrajetModel actualPointInterest;
+    private TrajetModel trajet;
+
+    private boolean isConnected;
+    private NetworkInfo activeNetwork;
+    private ConnectivityManager connectivityManager;
+
     private Gson gsonBuilder = new GsonBuilder()
             .serializeNulls()
             .create();
@@ -57,11 +62,13 @@ public class DescriptionActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_description);
+
         connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        titre=findViewById(R.id.title_description_activity);
-        description =findViewById(R.id.description_area_description_activity);
+        titre = findViewById(R.id.title_description_activity);
+        description = findViewById(R.id.description_area_description_activity);
         description.setMovementMethod(new ScrollingMovementMethod());
 
         //region recupération du token
@@ -72,34 +79,46 @@ public class DescriptionActivity extends AppCompatActivity {
 
         //region recuperation des infos du QR code
         String json=PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
-                .getString("jsonTrajet","no trajet");
-
-        actualPointInterest = gsonBuilder.fromJson(json, new TypeToken<PointInteretTrajetModel>(){}.getType());
+                .getString("jsonTrajet","no trip");
+            actualPointInterest = gsonBuilder.fromJson(json, new TypeToken<PointInteretTrajetModel>() {
+            }.getType());
         ArrayList<Long> idTrajets = new ArrayList<>();
-
-        for(JsonToTrajetModel trajet: actualPointInterest.getTrajets()){
-            idTrajets.add(trajet.getIdTrajet());
+        if(actualPointInterest != null) {
+            for (JsonToTrajetModel trajet : actualPointInterest.getTrajets()) {
+                idTrajets.add(trajet.getIdTrajet());
+            }
+        }else {
+            final Snackbar snackbar = Snackbar.make(findViewById(R.id.scanner), "Le qr code n'est pas valide réessayez un autre", Snackbar.LENGTH_INDEFINITE);
+            snackbar.setAction("OK", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    snackbar.dismiss();
+                    startActivity(new Intent(DescriptionActivity.this, QrCodeActivity.class));
+                }
+            });
+            snackbar.show();
         }
 
         //endregion
 
-        //region gestion recyclerview
+        //region handling recyclerview
         mRecyclerView = findViewById(R.id.recyclerView_description_activity);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(getBaseContext(), mRecyclerView ,new OnItemClickListener() {
                     @Override public void onItemClick(View view, int position) {
                         trajet= trajets.get(position);
                         idPoints = actualPointInterest.getTrajets().get(position).getPoints();
-                        //region
+
                         activeNetwork = connectivityManager.getActiveNetworkInfo();
                         isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
                         if(isConnected) {
                             new LoadPins().execute(idPoints);
                         }
-                        else{
-                            final Snackbar snackbar = Snackbar.make(findViewById(R.id.buttonToMap_menuMap_activity),"La connection internet s'est interrompu", Snackbar.LENGTH_INDEFINITE);
+                        else {
+                            final Snackbar snackbar = Snackbar.make(findViewById(R.id.recyclerView_description_activity), "La connexion internet s'est interrompue", Snackbar.LENGTH_INDEFINITE);
                             snackbar.setAction("OK", new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -114,8 +133,7 @@ public class DescriptionActivity extends AppCompatActivity {
         );
         //endregion
 
-
-        //region Test internet + obtention infos pour titre + description
+        //region Test internet + get info title + description
         activeNetwork = connectivityManager.getActiveNetworkInfo();
         isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
         if(isConnected) {
@@ -126,7 +144,7 @@ public class DescriptionActivity extends AppCompatActivity {
             LoadTrajet loadTrajet = new LoadTrajet();
             loadTrajet.execute(idTrajets);
         } else{
-            final Snackbar snackbar = Snackbar.make(findViewById(R.id.buttonSignUp),"La connection internet s'est interrompu", Snackbar.LENGTH_INDEFINITE);
+            final Snackbar snackbar = Snackbar.make(findViewById(R.id.recyclerView_description_activity),"La connection internet s'est interrompu", Snackbar.LENGTH_INDEFINITE);
             snackbar.setAction("OK", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -192,12 +210,12 @@ public class DescriptionActivity extends AppCompatActivity {
         TokenReceivedModel token= new TokenReceivedModel();
         @Override
         protected ArrayList<String> doInBackground(Long ...params) {
-            imagesUrl = new ArrayList<>();
+            ArrayList<String> imagesUrl = new ArrayList<>();
             try {
                 token.setToken(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("token","no Token"));
                 imagesUrl =ravelDAO.getImages(token,params[0]);
             } catch (TokenException e) {
-                final Snackbar snackbar = Snackbar.make(findViewById(R.id.map),e.getMessage(), Snackbar.LENGTH_INDEFINITE);
+                final Snackbar snackbar = Snackbar.make(findViewById(R.id.recyclerView_description_activity),e.getMessage(), Snackbar.LENGTH_INDEFINITE);
                 snackbar.setAction("OK", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -207,7 +225,7 @@ public class DescriptionActivity extends AppCompatActivity {
                 snackbar.show();
                 isTokenAlive= false;
             } catch (ImageException e) {
-                final Snackbar snackbar = Snackbar.make(findViewById(R.id.map),e.getMessage(), Snackbar.LENGTH_INDEFINITE);
+                final Snackbar snackbar = Snackbar.make(findViewById(R.id.recyclerView_description_activity),e.getMessage(), Snackbar.LENGTH_INDEFINITE);
                 snackbar.setAction("OK", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -269,7 +287,7 @@ public class DescriptionActivity extends AppCompatActivity {
         }
         protected void onPostExecute(ArrayList<TrajetModel> result) {
             if(isTokenAlive) {
-                TrajetAdapter adapter = new TrajetAdapter(result);
+                TripAdapter adapter = new TripAdapter(result);
                 mRecyclerView.setAdapter(adapter);
             }else{
                 startActivity(new Intent(DescriptionActivity.this,LoginActivity.class));
@@ -350,6 +368,5 @@ public class DescriptionActivity extends AppCompatActivity {
             }
         }
     }
-
 
 }

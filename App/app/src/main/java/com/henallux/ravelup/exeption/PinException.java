@@ -1,9 +1,9 @@
-package com.henallux.ravelup.exeptions;
+package com.henallux.ravelup.exeption;
 
-public class LoginExecption extends Exception{
+public class PinException extends Exception {
     private String message;
 
-    public LoginExecption(String message) {
+    public PinException(String message) {
         this.message = message;
     }
 

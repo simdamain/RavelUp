@@ -1,16 +1,14 @@
 package com.henallux.ravelup.dao.dataacess;
 
-import com.google.android.gms.maps.model.PointOfInterest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.henallux.ravelup.exeptions.ImageException;
-import com.henallux.ravelup.exeptions.PinException;
-import com.henallux.ravelup.exeptions.TokenException;
-import com.henallux.ravelup.exeptions.TrajetException;
-import com.henallux.ravelup.models.ImageModel;
-import com.henallux.ravelup.models.PointOfInterestModel;
-import com.henallux.ravelup.models.TokenReceivedModel;
-import com.henallux.ravelup.models.TrajetModel;
+import com.henallux.ravelup.exeption.ImageException;
+import com.henallux.ravelup.exeption.PinException;
+import com.henallux.ravelup.exeption.TokenException;
+import com.henallux.ravelup.exeption.TrajetException;
+import com.henallux.ravelup.model.PointOfInterestModel;
+import com.henallux.ravelup.model.TokenReceivedModel;
+import com.henallux.ravelup.model.TrajetModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,8 +20,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
 

@@ -20,10 +20,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.henallux.ravelup.R;
 import com.henallux.ravelup.dao.dataacess.ConnectionDAO;
-import com.henallux.ravelup.exeptions.CityException;
-import com.henallux.ravelup.exeptions.SignUpException;
-import com.henallux.ravelup.models.CityModel;
-import com.henallux.ravelup.models.UserModel;
+import com.henallux.ravelup.exeption.CityException;
+import com.henallux.ravelup.exeption.SignUpException;
+import com.henallux.ravelup.model.CityModel;
+import com.henallux.ravelup.model.UserModel;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,26 +32,29 @@ import java.util.regex.Pattern;
 
 
 public class SignUpActivity extends AppCompatActivity {
-    private ArrayList<CityModel> allCities;
-    private LoadCities loadCities;
-    private NetworkInfo activeNetwork;
-    private ConnectivityManager connectivityManager;
+
     private Spinner spinnerCities;
+
     private ArrayList<String> libelleCities;
+
+    private ArrayList<CityModel> allCities;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_signup);
-        connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         Gson gsonBuilder = new GsonBuilder().serializeNulls().create();
 
 
         //region Test internet
-        activeNetwork = connectivityManager.getActiveNetworkInfo();
+        NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
         if(isConnected) {
-            loadCities = new LoadCities();
+            LoadCities loadCities = new LoadCities();
             loadCities.execute();
         } else{
             final Snackbar snackbar = Snackbar.make(findViewById(R.id.buttonSignUp),"La connection internet s'est interrompu", Snackbar.LENGTH_INDEFINITE);
@@ -66,7 +69,7 @@ public class SignUpActivity extends AppCompatActivity {
         //endregion
 
         //region spinner
-        spinnerCities =findViewById(R.id.spinnerCity);
+        spinnerCities = findViewById(R.id.spinnerCity);
         spinnerCities.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             @Override
@@ -74,6 +77,7 @@ public class SignUpActivity extends AppCompatActivity {
                                        int position, long id) {
                 Object item = adapterView.getItemAtPosition(position);
                 if (item != null) {
+                    //TODO
                 }
 
             }
@@ -82,13 +86,12 @@ public class SignUpActivity extends AppCompatActivity {
         });
         //endregion
 
-
         //region help button
         ImageView helpButtonPassword = findViewById(R.id.help_button_password_signup_activity);
         helpButtonPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Snackbar snackbar = Snackbar.make(findViewById(R.id.help_button_password_signup_activity), "le mot de passe doit avoir au moins un chiffre, une maj et un caractère spc", Snackbar.LENGTH_INDEFINITE);
+                final Snackbar snackbar = Snackbar.make(findViewById(R.id.help_button_password_signup_activity), "le mot de passe doit contenir au moins un chiffre, une maj et un caractère spc", Snackbar.LENGTH_INDEFINITE);
                 snackbar.setAction("OK", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -98,11 +101,12 @@ public class SignUpActivity extends AppCompatActivity {
                 snackbar.show();
             }
         });
+
         ImageView helpButtonBirthdate = findViewById(R.id.help_button_birthdate_signup_activity);
         helpButtonBirthdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Snackbar snackbar = Snackbar.make(findViewById(R.id.help_button_birthdate_signup_activity), "l'application est reservée pour des personnes d'au moins 12ans", Snackbar.LENGTH_INDEFINITE);
+                final Snackbar snackbar = Snackbar.make(findViewById(R.id.help_button_birthdate_signup_activity), "l'application est conçue pour des personnes d'au moins 12ans", Snackbar.LENGTH_INDEFINITE);
                 snackbar.setAction("OK", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -120,6 +124,7 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 UserModel user= new UserModel();
+
                 Boolean hasError = false;
                 Boolean dateHasError= false;
 
@@ -132,10 +137,13 @@ public class SignUpActivity extends AppCompatActivity {
                     login.setError("Ce champs ne peut être vide");
                     hasError=true;
                 }
+
                 TextInputLayout password = findViewById(R.id.password_signUpActivity);
                 String passwordValue = password.getEditText().getText().toString();
-                Pattern patternPassword = Pattern.compile("(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%_\\-*?&])[A-Za-z\\d@$!%_\\-*?&]{8,}");
+
+                Pattern patternPassword = Pattern.compile(getString(R.string.regex));
                 Matcher matcherPassword = patternPassword.matcher(passwordValue);
+
                 password.setError(null);
                 if(!passwordValue.isEmpty()){
                     if(matcherPassword.matches())
@@ -155,14 +163,16 @@ public class SignUpActivity extends AppCompatActivity {
                 if(!confirmedPasswordValue.isEmpty() && passwordValue.equals(confirmedPasswordValue) ){
                     user.setPasswordConfirm(confirmedPasswordValue);
                 } else {
-                    confirmedPassword.setError("Ce champs ne peut être vide ou les mots de passe ne correspondent pas");
+                    confirmedPassword.setError("Ce champs ne peut être vide // les mots de passe ne correspondent pas");
                     hasError=true;
                 }
 
                 TextInputLayout email = findViewById(R.id.email_signUpActivity);
                 String emailValue = email.getEditText().getText().toString();
-                Pattern patternEmail = Pattern.compile("^[_A-z0-9-]+(\\.[_A-z0-9-]+)*@[A-z0-9-]+(\\.[a-z0-9-]+)+$");
+
+                Pattern patternEmail = Pattern.compile(getString(R.string.email_regex));
                 Matcher matcherEmail = patternEmail.matcher(emailValue);
+
                 email.setError(null);
                 if(!emailValue.isEmpty()){
                     if(matcherEmail.matches())
@@ -207,15 +217,17 @@ public class SignUpActivity extends AppCompatActivity {
                     int monthnb = Integer.parseInt(monthValue) - 1;
                     Date date = new Date(yearnb, monthnb, Integer.parseInt(dayValue));
                     Date ageMin = new Date(106,0,1);
+
                     if (date.compareTo(ageMin)<0) {
                         user.setBirthDate(date);
                     } else {
                         day.setError("la date");
                         month.setError("est trop");
-                        year.setError("petite");
+                        year.setError("récente");
                         hasError = true;
                     }
                 }
+
                 String libelleVille = spinnerCities.getSelectedItem().toString();
                 for (CityModel city : allCities){
                     if(libelleVille.contains(city.getLibelle())){
@@ -224,8 +236,7 @@ public class SignUpActivity extends AppCompatActivity {
                 }
                 if(!hasError){
                         new signUp().execute(user);
-                }else
-                    hasError = false;
+                }
             }
         });
         //endregion

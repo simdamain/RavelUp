@@ -56,4 +56,6 @@
     <string name="title_infowindow" />
     <string name="description_infowindow" />
     <string name="image_du_points_d_interet">image du points d\'interet</string>
+    <string name="regex"><![CDATA[(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%_\\-*?&])[A-Za-z\\d@$!%_\\-*?&]{8,}]]></string>
+    <string name="email_regex">^[_A-z0-9-]+(\\.[_A-z0-9-]+)*@[A-z0-9-]+(\\.[a-z0-9-]+)+$</string>
 </resources>

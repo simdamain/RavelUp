@@ -8,37 +8,35 @@ import android.widget.TextView;
 
 
 import com.henallux.ravelup.R;
-import com.henallux.ravelup.models.TrajetModel;
+import com.henallux.ravelup.model.TrajetModel;
 
 import java.util.ArrayList;
 
-public class TrajetAdapter extends RecyclerView.Adapter<TrajetAdapter.MyViewHolder> implements View.OnClickListener,View.OnLongClickListener{
+public class TripAdapter extends RecyclerView.Adapter<TripAdapter.MyViewHolder> implements View.OnClickListener,View.OnLongClickListener{
+
     private ArrayList<TrajetModel> dataset;
-
-
 
     public static class MyViewHolder extends RecyclerView.ViewHolder{
         public View Layout;
-        public TextView trajet;
-        public MyViewHolder(View v){
+        TextView trip;
+        MyViewHolder(View v){
             super(v);
             Layout= v;
-            trajet = v.findViewById(R.id.trajet_recyclerViewTrajet);
+            trip = v.findViewById(R.id.trajet_recyclerViewTrajet);
         }
     }
 
-    public TrajetAdapter(ArrayList<TrajetModel> myDataset){
+    TripAdapter(ArrayList<TrajetModel> myDataset){
         dataset= myDataset;
     }
 
-    public TrajetAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
+    public TripAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
         View v =LayoutInflater.from(parent.getContext()).inflate(R.layout.list_trajet_description_activity,parent,false);
-        TrajetAdapter.MyViewHolder vh= new TrajetAdapter.MyViewHolder(v);
-        return vh;
+        return new MyViewHolder(v);
     }
 
-    public void onBindViewHolder(TrajetAdapter.MyViewHolder holder, final int position){
-        holder.trajet.setText(dataset.get(position).descriptionRecyclerView());
+    public void onBindViewHolder(TripAdapter.MyViewHolder holder, final int position){
+        holder.trip.setText(dataset.get(position).descriptionRecyclerView());
 
     }
     public int getItemCount(){
@@ -47,7 +45,6 @@ public class TrajetAdapter extends RecyclerView.Adapter<TrajetAdapter.MyViewHold
 
     @Override
     public void onClick(View v) {
-
     }
 
     @Override
