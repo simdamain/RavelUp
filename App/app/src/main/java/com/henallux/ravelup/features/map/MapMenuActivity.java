@@ -76,7 +76,7 @@ public class MapMenuActivity extends AppCompatActivity {
             snackbar.show();
 
         }
-        //endregionk
+        //endregion
 
     //region Slider
         // SeekBar

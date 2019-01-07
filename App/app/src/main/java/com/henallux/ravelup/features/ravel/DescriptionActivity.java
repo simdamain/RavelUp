@@ -33,7 +33,6 @@ import com.henallux.ravelup.model.PointOfInterestModel;
 import com.henallux.ravelup.model.TokenReceivedModel;
 import com.henallux.ravelup.model.TrajetModel;
 
-import org.json.JSONException;
 
 import java.util.ArrayList;
 
@@ -199,9 +198,7 @@ public class DescriptionActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onCancelled() {
-            super.onCancelled();
-        }
+        protected void onCancelled() { super.onCancelled();}
     }
 
     class LoadImages extends AsyncTask<Long,Void,ArrayList<String>> {

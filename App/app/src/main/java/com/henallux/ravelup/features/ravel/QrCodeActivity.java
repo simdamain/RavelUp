@@ -18,20 +18,13 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
-
 
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
-import com.google.gson.Gson;
 import com.henallux.ravelup.R;
-import com.henallux.ravelup.features.menus.MainRedirectActivity;
 import com.henallux.ravelup.model.TokenReceivedModel;
-/*import com.henallux.ravelup.features;
-import com.henallux.smartcity.DAO.PlantJSONDAO;
-import com.henallux.smartcity.R;*/
 
 import java.io.IOException;
 
@@ -45,8 +38,6 @@ public class QrCodeActivity extends AppCompatActivity {
     private SurfaceView cameraPreview;
     private ConnectivityManager connectivityManager;
     final int RequestCameraPermissionID = 1001;
-
-    //to avoid spamming scan of a qr code
 
     private boolean hasScanned = false;
 
@@ -72,7 +63,6 @@ public class QrCodeActivity extends AppCompatActivity {
                     .setRequestedPreviewSize(300,350)
                     .build();
 
-            //Add event
             cameraPreview.getHolder().addCallback(cameraCallback);
             barcodeDetector.setProcessor(scanDetector);
         }
@@ -81,7 +71,6 @@ public class QrCodeActivity extends AppCompatActivity {
             @Override
             public void surfaceCreated(SurfaceHolder surfaceHolder) {
                 if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                    //Request permission
                     ActivityCompat.requestPermissions(QrCodeActivity.this,
                             new String[]{Manifest.permission.CAMERA}, RequestCameraPermissionID);
                     return;
@@ -126,11 +115,8 @@ public class QrCodeActivity extends AppCompatActivity {
 
         private Detector.Processor<Barcode> scanDetector = new Detector.Processor<Barcode>() {
             @Override
-            public void release() {
+            public void release() { }
 
-            }
-
-            //TO DO ON SCAN ITEM
             @Override
             public void receiveDetections(Detector.Detections<Barcode> detections) {
                 final SparseArray<Barcode> qrcodes = detections.getDetectedItems();
@@ -141,14 +127,13 @@ public class QrCodeActivity extends AppCompatActivity {
                         txtView.post(new Runnable(){
                             @Override
                             public void run(){
-                                Gson gsonBuilder = new Gson();
                                 String json = qrcodes.valueAt(0).displayValue;
 
                                 PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
                                         .edit()
                                         .putString("jsonTrajet",json)
                                         .apply();
-                                //Create vibrate
+
                                 Vibrator vibrator = (Vibrator)getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
                                 vibrator.vibrate(250);
                                 NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
@@ -169,7 +154,6 @@ public class QrCodeActivity extends AppCompatActivity {
                                     }
                             }
                         });
-//                        hasScanned = true;
                     }
                 }
         };
