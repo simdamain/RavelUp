@@ -244,7 +244,9 @@ public class SignUpActivity extends AppCompatActivity {
 
     private class signUp extends  AsyncTask<UserModel,Void,Void>{
 
+        private boolean isSignup = true;
         private ConnectionDAO connectionDAO = new ConnectionDAO();
+
 
         @Override
         protected Void doInBackground(UserModel... params) {
@@ -259,12 +261,14 @@ public class SignUpActivity extends AppCompatActivity {
                     }
                 });
                 snackbar.show();
+                isSignup = false;
             }
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
+            if(isSignup)
            startActivity(new Intent(SignUpActivity.this,LoginActivity.class));
         }
     }

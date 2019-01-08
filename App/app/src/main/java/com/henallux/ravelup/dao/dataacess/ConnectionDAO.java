@@ -117,7 +117,7 @@ public class ConnectionDAO{
             outputStream.close();
             connection.disconnect();
         } catch (IOException e) {
-            throw  new SignUpException("Les informations sont incorrects ou manquantes");
+            throw  new SignUpException("Les informations sont incorrects ou déjà existante");
         }
 
     }
