@@ -66,7 +66,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         setContentView(R.layout.activity_map);
         getLocationPermission();
-
+        initMap();
     }
 
 
@@ -113,7 +113,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         if (ContextCompat.checkSelfPermission(this.getApplicationContext(),Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
             if(ContextCompat.checkSelfPermission(this.getApplicationContext(),Manifest.permission.ACCESS_COARSE_LOCATION)==PackageManager.PERMISSION_GRANTED){
                 mLocationPermissionsGranted= true;
-                initMap();
             }else{
                 ActivityCompat.requestPermissions(this,permissions,MY_PERMISSIONS_REQUEST_LOCATION);
             }
